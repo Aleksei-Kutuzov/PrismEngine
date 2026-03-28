@@ -11,7 +11,8 @@ class PipelineStorage : public L1_Object<PipelineStorage> {
 public:
 	void createImpl();
 	void cleanupImpl();
-	VkPipeline add(utils::PipelineSettings pipelineSettings);
+	size_t add(utils::PipelineSettings pipelineSettings);
+	VkPipeline get(size_t index);
 	void remove(VkPipeline pipeline);
 
 private:

@@ -73,7 +73,7 @@ namespace spinningPrism {
      * 3. Как создавать и настраивать 3D объекты
      * 4. Как использовать системы для добавления поведения
      */
-    int spinningPrismDemo() {
+    int spinningPrismDemo(int targetFps) {
         // ========== ШАГ 1: ИНИЦИАЛИЗАЦИЯ ДВИЖКА ==========
         prism::init();
 
@@ -111,7 +111,9 @@ namespace spinningPrism {
         // ========== ШАГ 3: НАСТРОЙКА СИСТЕМ И РЕСУРСОВ ==========
 
         // Добавляем ресурс времени
-        scene.setResource<TimeResource>(TimeResource{});
+        TimeResource timeRes{};
+        timeRes.setFPSCap(targetFps);
+        scene.setResource<TimeResource>(timeRes);
 
         scene.setResource<InputResource>(InputResource{});
         scene.registerSystem<InputSystem>(&scene); // Нужна для обновления состояний окна и ввода
@@ -178,9 +180,7 @@ namespace spinningPrism {
         while (!scene.getResource<WindowResource>()->isClose()) {
             // Обновляем сцену (вызываем все системы)
             scene.update();
-
-            // Небольшая задержка для снижения нагрузки на CPU
-            SDL_Delay(15); // ~60 кадров в секунду
+            // prism::logger::info("FPS:" + std::to_string(scene.getResource<TimeResource>()->getCurrentFPS()));
         }
 
         // ========== ШАГ 8: КОРРЕКТНОЕ ЗАВЕРШЕНИЕ ==========

@@ -124,7 +124,7 @@ namespace materials {
         return entity;
     }
 
-    int materialsDemo() {
+    int materialsDemo(int targetFps) {
         prism::init();
 
         Scene scene;

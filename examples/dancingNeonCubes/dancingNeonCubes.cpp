@@ -88,7 +88,7 @@ namespace dancingNeonCubes {
         scene.addComponent(back, TransformComponent{ {0, -4, 5}, {0, 90, 0}, {29, 1, 31} });
     }
 
-    int dancingNeonCubesDemo() {
+    int dancingNeonCubesDemo(int targetFps) {
         prism::init();
 
         Scene scene;
@@ -112,7 +112,9 @@ namespace dancingNeonCubes {
         MaterialComponent backMaterial = { renderer.addTexture(EXAMPLE_NAME + "/textures/back.jpeg") };
 
         // Добавляем ресурс времени
-        scene.setResource<TimeResource>(TimeResource{});
+        TimeResource timeRes{};
+        timeRes.setFPSCap(targetFps);
+        scene.setResource<TimeResource>(timeRes);
         scene.setResource<InputResource>(InputResource{});
 
         // Системы
@@ -145,8 +147,6 @@ namespace dancingNeonCubes {
 
         while (!scene.getResource<WindowResource>()->isClose()) {
             scene.update();
-
-            SDL_Delay(16);
         }
 
         renderer.destroy();

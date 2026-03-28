@@ -6,13 +6,18 @@ void prism::PGC::L1::PipelineStorage::createImpl() {
     createPipeline(&context->graphicsPipeline, settings->defaultPipeline);
 }
 
-VkPipeline prism::PGC::L1::PipelineStorage::add(utils::PipelineSettings pipelineSettings) {
+size_t prism::PGC::L1::PipelineStorage::add(utils::PipelineSettings pipelineSettings) {
     size_t pipelineSettingsHash = pipelineSettings.getHash();
-    if (pipelines.count(pipelineSettingsHash)) { return pipelines[pipelineSettingsHash]; }
+    if (pipelines.count(pipelineSettingsHash)) { return pipelineSettingsHash; }
     pipelines[pipelineSettingsHash] = VkPipeline{};
     createPipeline(&pipelines[pipelineSettingsHash], pipelineSettings);
     
-    return pipelines[pipelineSettingsHash];
+    return pipelineSettingsHash;
+}
+
+VkPipeline prism::PGC::L1::PipelineStorage::get(size_t index)
+{
+    return pipelines[index];
 }
 
 void prism::PGC::L1::PipelineStorage::remove(VkPipeline pipeline)

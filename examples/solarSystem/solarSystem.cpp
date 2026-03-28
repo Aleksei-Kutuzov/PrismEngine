@@ -148,7 +148,7 @@ namespace solarSystem {
     }
 
 
-    int solarSystemDemo() {
+    int solarSystemDemo(int targetFps) {
         prism::init();
 
         Scene scene;
@@ -182,7 +182,9 @@ namespace solarSystem {
         renderer.updateMeshes();
         
         // ресурсы
-        scene.setResource<TimeResource>(TimeResource{});
+        TimeResource timeRes{};
+        timeRes.setFPSCap(targetFps);
+        scene.setResource<TimeResource>(timeRes);
         scene.setResource<InputResource>(InputResource{});
 
         // Системы
@@ -207,8 +209,6 @@ namespace solarSystem {
 
         while (!scene.getResource<WindowResource>()->isClose()) {
             scene.update();
-
-            SDL_Delay(16);
         }
 
         renderer.destroy();

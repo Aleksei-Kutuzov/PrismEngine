@@ -27,6 +27,7 @@ namespace prism {
         private:
             prism::scene::Scene* scene; /// Указатель на родительскую сцену
             std::chrono::steady_clock::time_point lastTime; /// Временная точка предыдущего кадра
+            std::chrono::steady_clock::time_point frameStartTime; /// Время начала текущего кадра
 
         };
     }
