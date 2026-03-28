@@ -21,7 +21,7 @@ void prism::scene::RenderSystem::update()
         }
         auto forRenderingEntites = scene->getEntitiesWithAll<TransformComponent, MeshComponent>();
         std::vector<prism::render::InstanceData> renderData;
-        std::map<Mesh, std::vector<prism::render::InstanceData>> instances;
+        std::map<uint32_t, std::vector<prism::render::InstanceData>> instances;
         MaterialComponent defaultTexture = { INVALID_TEXTURE_ID };
 
         for (auto entity : forRenderingEntites) {
@@ -33,7 +33,9 @@ void prism::scene::RenderSystem::update()
             else {
                 texture = &defaultTexture;
             }
-            instances[scene->getComponent<MeshComponent>(entity)->mesh].push_back({ scene->getComponent<TransformComponent>(entity), texture });
+            for (uint32_t subMesh : scene->getComponent<MeshComponent>(entity)->mesh) {
+                instances[subMesh].push_back({ scene->getComponent<TransformComponent>(entity), texture });
+            }
         }
 
         for (auto instance : instances) {

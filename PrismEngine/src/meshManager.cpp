@@ -15,25 +15,30 @@ prism::Mesh prism::PGC::L1::MeshManager::addMesh(std::string texturePath)
   //    return INVALID_MESH_ID;
   //}
 
-    Mesh info;
-    info.vertexOffset = static_cast<uint32_t>(context->allVertices.size());
-    info.vertexCount = static_cast<uint32_t>(mesh.vertices.size());
-    info.indexOffset = static_cast<uint32_t>(context->allIndices.size());
-    info.indexCount = static_cast<uint32_t>(mesh.indices.size());
+    prism::Mesh meshIds;
+    meshIds.reserve(mesh.infos.size());
+
+    for (auto& info : mesh.infos)
+    {
+        info.vertexOffset += static_cast<uint32_t>(context->allVertices.size());
+        info.indexOffset += static_cast<uint32_t>(context->allIndices.size());
+
+        uint32_t id = getNextAvailableIndex();
+        if (id >= context->mesh.size()) {
+            context->mesh.push_back(info);
+        }
+        else {
+            context->mesh[id] = info;
+        }
+
+        meshIds.push_back(id);
+    }
 
     context->allVertices.insert(context->allVertices.end(), mesh.vertices.begin(), mesh.vertices.end());
     context->allIndices.insert(context->allIndices.end(), mesh.indices.begin(), mesh.indices.end());
 
-    prism::Mesh id = getNextAvailableIndex();
-    if (id >= context->meshes.size()) {
-        context->meshes.push_back(info);
-    }
-    else {
-        context->meshes[id] = info;
-    }
-
     context->meshBuffersDirty = true;
-    return id;
+    return meshIds;
 }
 
 void prism::PGC::L1::MeshManager::update()
@@ -73,7 +78,7 @@ void prism::PGC::L1::MeshManager::update()
 
 void prism::PGC::L1::MeshManager::clear()
 {
-    context->meshes.clear();
+    context->mesh.clear();
     context->allVertices.clear();
     context->allIndices.clear();
     context->freeMeshIndices.clear();
@@ -87,12 +92,12 @@ void prism::PGC::L1::MeshManager::cleanupImpl()
     delete meshLoader;
 }
 
-prism::PGC::Mesh& prism::PGC::L1::MeshManager::getMeshInfo(prism::Mesh id)
+prism::PGC::SubMesh& prism::PGC::L1::MeshManager::getSubMeshInfo(uint32_t id)
 {
-    static Mesh emptyInfo = { 0, 0, 0, 0 };
+    static prism::PGC::SubMesh emptyInfo = { 0, 0, 0, 0 };
 
-    if (id < context->meshes.size()) {
-        return context->meshes[id];
+    if (id < context->mesh.size()) {
+        return context->mesh[id];
     }
 
     return emptyInfo;
@@ -106,6 +111,5 @@ uint32_t prism::PGC::L1::MeshManager::getNextAvailableIndex()
         return index;
     }
 
-    return static_cast<uint32_t>(context->meshes.size());
+    return static_cast<uint32_t>(context->mesh.size());
 }
-

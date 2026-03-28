@@ -2,15 +2,24 @@
 #include <cstdint>
 
 namespace prism {
-	typedef uint32_t Mesh;
+	using Mesh = std::vector<uint32_t>;
 
 	namespace PGC {
-		struct Mesh
+		struct SubMesh
 		{
-			uint32_t vertexOffset;
-			uint32_t indexOffset;
-			uint32_t vertexCount;
-			uint32_t indexCount;
+			uint32_t vertexOffset = 0;
+			uint32_t indexOffset = 0;
+			uint32_t vertexCount = 0;
+			uint32_t indexCount = 0;
+		};
+
+		using Mesh = std::vector<PGC::SubMesh>;
+
+		struct MeshData {
+			std::vector<Vertex> vertices;
+			std::vector<uint32_t> indices;
+
+			Mesh infos;
 		};
 	}
 }

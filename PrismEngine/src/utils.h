@@ -77,7 +77,7 @@ namespace prism {
 
 				std::vector<Vertex> allVertices;
 				std::vector<uint32_t> allIndices;
-				std::vector<prism::PGC::Mesh> meshes;
+				prism::PGC::Mesh mesh;
 				std::vector<uint32_t> freeMeshIndices;
 				bool meshBuffersDirty = false;
 

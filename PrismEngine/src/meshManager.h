@@ -14,7 +14,7 @@ public:
 	void update();
 	void clear();
 	void cleanupImpl();
-	prism::PGC::Mesh& getMeshInfo(prism::Mesh id);
+	prism::PGC::SubMesh& getSubMeshInfo(uint32_t id);
 private:
 	uint32_t getNextAvailableIndex();
 	PGC::L2::MeshLoader* meshLoader;

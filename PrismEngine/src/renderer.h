@@ -39,7 +39,7 @@ namespace prism {
 			void updateLights(LightData* lightData);
 			void bindDefault();
 			void bindObjectsData();
-			void drawMesh(uint32_t meshId, uint32_t instanceCount, uint32_t firstIndex);
+			void drawMesh(uint32_t subMeshId, uint32_t instanceCount, uint32_t firstIndex);
 
 			TextureId addTexture(const std::string& texturePath);
 			bool removeTexture(TextureId texture);

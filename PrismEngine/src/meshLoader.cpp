@@ -14,10 +14,14 @@ prism::PGC::MeshData prism::PGC::L2::MeshLoader::load(std::string texturePath)
     if (!tinyobj::LoadObj(&attrib, &shapes, &materials, nullptr, &err, texturePath.c_str())) {
         throw std::runtime_error(err);
     }
+    meshData.infos.reserve(shapes.size());
 
-    std::unordered_map<prism::PGC::Vertex, uint32_t, prism::PGC::VertexHasher> uniqueVertices{};
+    SubMesh targetSubMesh;
 
     for (const auto& shape : shapes) {
+        std::unordered_map<Vertex, uint32_t, VertexHasher> uniqueVertices;
+
+        targetSubMesh.indexCount = targetSubMesh.vertexCount = 0;
         for (const auto& index : shape.mesh.indices) {
             Vertex vertex{};
 
@@ -56,10 +60,15 @@ prism::PGC::MeshData prism::PGC::L2::MeshLoader::load(std::string texturePath)
             if (uniqueVertices.count(vertex) == 0) {
                 uniqueVertices[vertex] = static_cast<uint32_t>(meshData.vertices.size());
                 meshData.vertices.push_back(vertex);
+                targetSubMesh.vertexCount++;
             }
 
             meshData.indices.push_back(uniqueVertices[vertex]);
+            targetSubMesh.indexCount++;
         }
+        meshData.infos.push_back(targetSubMesh);
+        targetSubMesh.indexOffset += targetSubMesh.indexCount;
+        targetSubMesh.vertexOffset += targetSubMesh.vertexCount;
     }
 
     return meshData;

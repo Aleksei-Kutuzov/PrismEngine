@@ -275,9 +275,9 @@ void prism::render::Renderer::bindObjectsData()
 		0, nullptr);
 }
 
-void prism::render::Renderer::drawMesh(uint32_t meshId, uint32_t instanceCount, uint32_t firstIndex)
+void prism::render::Renderer::drawMesh(uint32_t subMeshId, uint32_t instanceCount, uint32_t firstIndex)
 {
-	const PGC::Mesh& info = pgc.meshManager.getMeshInfo(meshId);
+	const PGC::SubMesh& info = pgc.meshManager.getSubMeshInfo(subMeshId);
 	vkCmdDrawIndexed(pgc.context.commandBuffers[pgc.context.currentFrame], info.indexCount, instanceCount, info.indexOffset, info.vertexOffset, firstIndex);
 
 }

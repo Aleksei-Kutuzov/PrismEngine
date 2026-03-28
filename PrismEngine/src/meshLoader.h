@@ -4,7 +4,7 @@
 #include "pgcLayersObjsTemplate.h"
 #include "utils.h"
 #include "vertex.h"
-#include "meshData.h"
+#include "mesh.h"
 
 
 DECLARE_PGC_LAYER_INSTANCE(L2)
