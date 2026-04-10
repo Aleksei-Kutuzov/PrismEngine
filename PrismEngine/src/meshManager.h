@@ -10,7 +10,7 @@ DECLARE_PGC_LAYER_INSTANCE(L1)
 class MeshManager : public L1_Object<MeshManager> {
 public:
 	void createImpl();
-	prism::Mesh addMesh(std::string texturePath);
+	prism::PGC::MeshIds addMesh(std::string texturePath);
 	void update();
 	void clear();
 	void cleanupImpl();

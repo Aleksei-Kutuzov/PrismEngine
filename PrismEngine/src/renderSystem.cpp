@@ -1,7 +1,6 @@
 #include "renderSystem.h"
 #include "cameraComponent.h"
 #include "transformComponent.h"
-#include "meshComponent.h"
 #include "materialComponent.h"
 #include "lightsComponent.h"
 
@@ -20,57 +19,66 @@ void prism::scene::RenderSystem::update()
             }
         }
         auto forRenderingEntites = scene->getEntitiesWithAll<TransformComponent, MeshComponent>();
-        std::vector<prism::render::InstanceData> renderData;
-        std::map<uint32_t, std::vector<prism::render::InstanceData>> instances;
-        MaterialComponent defaultTexture = { INVALID_TEXTURE_ID };
 
+        MaterialComponent defaultMaterial = { INVALID_TEXTURE_ID };
+
+        std::map<uint32_t, std::vector<std::pair<TransformComponent*, MaterialComponent*>>> meshBatches;
+        
         for (auto entity : forRenderingEntites) {
-            MaterialComponent* texture;
+            TransformComponent* transform = scene->getComponent<TransformComponent>(entity);
+            MeshComponent* mesh = scene->getComponent<MeshComponent>(entity);
+            MaterialComponent* material = scene->getComponent<MaterialComponent>(entity);
 
-            if (scene->getComponent<MaterialComponent>(entity) != nullptr) {
-                texture = scene->getComponent<MaterialComponent>(entity);
-            }
-            else {
-                texture = &defaultTexture;
-            }
-            for (uint32_t subMesh : scene->getComponent<MeshComponent>(entity)->mesh) {
-                instances[subMesh].push_back({ scene->getComponent<TransformComponent>(entity), texture });
-            }
+            if (!mesh || mesh->id == INVALID_REGISTRY_ID || !transform) continue;
+            if (!material) material = &defaultMaterial;
+
+            // Группируем по registry ID для инстансинга
+            meshBatches[mesh->id].emplace_back(transform, material);
         }
 
-        for (auto instance : instances) {
-            for (auto renData : instance.second) {
-                renderData.push_back(renData);
-            }
+        std::vector<prism::render::InstanceData> renderData;
+        renderData.reserve(forRenderingEntites.size());
 
+        std::map<uint32_t, uint32_t> meshInstanceOffsets;
+
+        for (auto& [meshId, instances] : meshBatches) {
+            meshInstanceOffsets[meshId] = static_cast<uint32_t>(renderData.size());
+            for (auto& [transform, material] : instances) {
+                renderData.push_back({ transform, material });
+            }
         }
 
         prism::render::LightData lightData;
         auto pointsLightEntitys =  scene->getEntitiesWith<PointLightComponent>();
         for (auto pointLightEntity : pointsLightEntitys) {
-            PointLightComponent pointsLight = *scene->getComponent<PointLightComponent>(pointLightEntity);
+            PointLightComponent* pointsLight = scene->getComponent<PointLightComponent>(pointLightEntity);
             
-            if (auto transform = scene->getComponent<TransformComponent>(pointLightEntity)) { pointsLight.pos += transform->pos; }
-            lightData.pointLights.push_back(pointsLight);
+            if (auto* transform = scene->getComponent<TransformComponent>(pointLightEntity)) { pointsLight->pos += transform->pos; }
+            lightData.pointLights.push_back(*pointsLight);
         }
 
         auto directionalLightEntitys = scene->getEntitiesWith<DirectionalLightComponents>();
         for (auto directionalLightEntity : directionalLightEntitys) {
-            DirectionalLightComponents dirLight = *scene->getComponent<DirectionalLightComponents>(directionalLightEntity);
-            lightData.directionalLights.push_back(dirLight);
+            DirectionalLightComponents* dirLight = scene->getComponent<DirectionalLightComponents>(directionalLightEntity);
+            lightData.directionalLights.push_back(*dirLight);
         }
 
         renderer->updateInstances(renderData);
         renderer->updateLights(&lightData);
+        
         renderer->beginRender();
-
         renderer->bindDefault();
         renderer->bindObjectsData();
 
-        uint32_t instanceOffset = 0;
-        for (auto instance : instances) {
-            renderer->drawMesh(instance.first, instance.second.size(), instanceOffset);
-            instanceOffset+=instance.second.size();
+        for (auto& [meshId, instances] : meshBatches) {
+            if (instances.empty()) continue;
+
+            MeshComponent meshHandle{ meshId };
+
+            uint32_t instanceCount = static_cast<uint32_t>(instances.size());
+            uint32_t firstInstance = meshInstanceOffsets[meshId];
+
+            renderer->drawMesh(meshHandle, instanceCount, firstInstance);
         }
 
         renderer->endRender();

@@ -17,6 +17,8 @@ void prism::render::Renderer::init()
 	pgc.windowResized = &window->windowResized;
 	pgc.windowMinimized = &window->windowMinimized;
 	pgc.init(this->settings);
+
+	meshRegistry = std::make_unique<MeshRegistry>();
 }
 
 bool prism::render::Renderer::isRenderingActive()
@@ -275,11 +277,24 @@ void prism::render::Renderer::bindObjectsData()
 		0, nullptr);
 }
 
-void prism::render::Renderer::drawMesh(uint32_t subMeshId, uint32_t instanceCount, uint32_t firstIndex)
+void prism::render::Renderer::drawMesh(prism::scene::MeshComponent mesh, uint32_t instanceCount, uint32_t firstIndex)
 {
-	const PGC::SubMesh& info = pgc.meshManager.getSubMeshInfo(subMeshId);
-	vkCmdDrawIndexed(pgc.context.commandBuffers[pgc.context.currentFrame], info.indexCount, instanceCount, info.indexOffset, info.vertexOffset, firstIndex);
+	uint16_t subMeshCount;
+	const uint32_t* subMeshIds = meshRegistry->get(mesh, subMeshCount);
 
+	if (!subMeshIds) return;
+
+	for (uint16_t i = 0; i < subMeshCount; i++) {
+		const PGC::SubMesh& info = pgc.meshManager.getSubMeshInfo(subMeshIds[i]);
+		vkCmdDrawIndexed(
+			pgc.context.commandBuffers[pgc.context.currentFrame],
+			info.indexCount,
+			instanceCount,
+			info.indexOffset,
+			info.vertexOffset,
+			firstIndex
+		);
+	}
 }
 
 prism::TextureId prism::render::Renderer::addTexture(const std::string& texturePath)
@@ -305,9 +320,19 @@ void prism::render::Renderer::clearTextures()
 	pgc.textureStorage.cleanup();
 }
 
-prism::scene::MeshComponent prism::render::Renderer::addMesh(std::string texturePath)
+prism::scene::MeshComponent prism::render::Renderer::loadMesh(const std::string& path)
 {
-	return { pgc.meshManager.addMesh(texturePath)};
+	auto subMeshIds = pgc.meshManager.addMesh(path);
+
+	if (subMeshIds.empty()) {
+		return { prism::scene::INVALID_REGISTRY_ID };
+	}
+
+	return meshRegistry->add(subMeshIds.data(), static_cast<uint16_t>(subMeshIds.size()));
+}
+
+const uint32_t* prism::render::Renderer::getMeshSubMeshes(prism::scene::MeshComponent mesh, uint16_t& outCount) const {
+	return meshRegistry->get(mesh, outCount);
 }
 
 void prism::render::Renderer::updateMeshes()
@@ -318,6 +343,7 @@ void prism::render::Renderer::updateMeshes()
 void prism::render::Renderer::clearMeshes()
 {
 	pgc.meshManager.clear();
+	meshRegistry->cleanup();
 }
 
 void prism::render::Renderer::awaitRenderingCompletion()
@@ -327,7 +353,12 @@ void prism::render::Renderer::awaitRenderingCompletion()
 
 void prism::render::Renderer::destroy()
 {
-	pgc.awaitRenderingCompletion();
+	awaitRenderingCompletion();
+	if (meshRegistry) {
+		meshRegistry->cleanup();
+		meshRegistry.reset();
+	}
+	
 	pgc.cleanup();
 }
 

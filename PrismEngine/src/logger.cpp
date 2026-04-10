@@ -41,7 +41,8 @@ namespace prism::logger {
             {Error::VULKAN_SWAP_CHAIN_FAILED, "Failed to create swap chain!"},
             {Error::FAILED_TO_OPEN_FILE, "Failed to open file"},
             {Error::FAILED_TO_DETERMINE_FILE_SIZE, "Failed to determine file size"},
-            {Error::FAILED_TO_READ_FILE, "Failed to read file"}
+            {Error::FAILED_TO_READ_FILE, "Failed to read file"},
+            {Error::RENDERER_IS_NOT_INSTALLED_FOR_SCENE, "The renderer is not installed for the scene, but it was required due to the graphics method call"}
         };
     }
 

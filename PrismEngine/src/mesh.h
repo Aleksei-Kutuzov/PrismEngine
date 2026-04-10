@@ -2,7 +2,7 @@
 #include <cstdint>
 
 namespace prism {
-	using Mesh = std::vector<uint32_t>;
+	using SubMeshId = uint32_t;
 
 	namespace PGC {
 		struct SubMesh
@@ -14,6 +14,7 @@ namespace prism {
 		};
 
 		using Mesh = std::vector<PGC::SubMesh>;
+		using MeshIds = std::vector<uint32_t>;
 
 		struct MeshData {
 			std::vector<Vertex> vertices;

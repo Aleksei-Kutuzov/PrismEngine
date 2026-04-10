@@ -6,9 +6,12 @@
 #include "windowResource.h"
 #include "transformComponent.h"
 #include "bufferObjects.h"
+#include "registryResourceTemplate.h"
 
 namespace prism {
 	namespace render {
+		using MeshRegistry = RegistryResourceTemplate<uint32_t, prism::scene::MeshTag>;
+
 		struct InstanceData
 		{
 			prism::scene::TransformComponent* transform;
@@ -21,8 +24,8 @@ namespace prism {
 		};
 
 	   class Renderer
-	    {
-		public:
+	   {
+	   public:
 			Renderer() : window(nullptr) {};
 			void linkWindow(prism::scene::WindowResource* window);
 			void setDefaultSettings();
@@ -39,15 +42,15 @@ namespace prism {
 			void updateLights(LightData* lightData);
 			void bindDefault();
 			void bindObjectsData();
-			void drawMesh(uint32_t subMeshId, uint32_t instanceCount, uint32_t firstIndex);
+			void drawMesh(prism::scene::MeshComponent mesh, uint32_t instanceCount, uint32_t firstIndex);
 
 			TextureId addTexture(const std::string& texturePath);
 			bool removeTexture(TextureId texture);
 			void remodeMaterial(scene::MaterialComponent material);
 			void clearTextures();
 
-
-			scene::MeshComponent addMesh(std::string texturePath);
+			prism::scene::MeshComponent loadMesh(const std::string& path);
+			const uint32_t* getMeshSubMeshes(prism::scene::MeshComponent mesh, uint16_t& outCount) const;
 			void updateMeshes();
 			void clearMeshes();
 
@@ -55,7 +58,11 @@ namespace prism {
 			void destroy();
 
 			PGC::utils::Settings settings;
+
+			friend class prism::scene::Scene;
 		private:
+
+			std::unique_ptr<MeshRegistry> meshRegistry;
 
 			PGC::PrismGraphicCore pgc;
 			prism::scene::WindowResource* window;

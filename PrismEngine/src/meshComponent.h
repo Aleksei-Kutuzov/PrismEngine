@@ -1,11 +1,9 @@
 #pragma once
-#include "mesh.h"
+#include "registryComponentTemplate.h"
 
 namespace prism {
 	namespace scene {
-		struct MeshComponent
-		{
-			Mesh mesh;
-		};
+		struct MeshTag {};
+		using MeshComponent = RegistryComponentTemplate<MeshTag>;
 	}
 }

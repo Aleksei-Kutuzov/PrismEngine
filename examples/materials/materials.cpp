@@ -138,7 +138,7 @@ namespace materials {
         renderer.init();
 
         // Загрузка ресурсов
-        MeshComponent skyboxMesh = renderer.addMesh(EXAMPLE_NAME + "/models/skybox2.obj");
+        MeshComponent skyboxMesh = renderer.loadMesh(EXAMPLE_NAME + "/models/skybox2.obj");
         MaterialComponent skyboxTexture = { renderer.addTexture(EXAMPLE_NAME + "/textures/lambert1_emissive.jpeg") };
 
         Position center = { 0, 0, 0 };
@@ -169,7 +169,7 @@ namespace materials {
         // Создаем скайбокс
         createSkybox(scene, skyboxMesh, skyboxTexture);
 
-        MeshComponent cubeMesh = renderer.addMesh(EXAMPLE_NAME + "/models/neoncube.obj");
+        MeshComponent cubeMesh = renderer.loadMesh(EXAMPLE_NAME + "/models/neoncube.obj");
 
         // Загружаем материал для призмы
         MaterialComponent cubeMaterial = { renderer.addTexture(EXAMPLE_NAME + "/textures/neoncube.png") };

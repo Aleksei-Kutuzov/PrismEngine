@@ -7,7 +7,7 @@ void prism::PGC::L1::MeshManager::createImpl()
     meshLoader = new PGC::L2::MeshLoader(context, settings);
 }
 
-prism::Mesh prism::PGC::L1::MeshManager::addMesh(std::string texturePath)
+prism::PGC::MeshIds prism::PGC::L1::MeshManager::addMesh(std::string texturePath)
 {
     prism::PGC::MeshData mesh = meshLoader->load(texturePath);
 
@@ -15,7 +15,7 @@ prism::Mesh prism::PGC::L1::MeshManager::addMesh(std::string texturePath)
   //    return INVALID_MESH_ID;
   //}
 
-    prism::Mesh meshIds;
+    prism::PGC::MeshIds meshIds;
     meshIds.reserve(mesh.infos.size());
 
     for (auto& info : mesh.infos)

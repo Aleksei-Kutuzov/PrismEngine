@@ -100,7 +100,7 @@ namespace spinningPrism {
         // ========== ШАГ 2: ЗАГРУЗКА РЕСУРСОВ ==========
 
         // Загружаем 3D модель призмы из файла
-        MeshComponent prismMesh = renderer.addMesh(EXAMPLE_NAME + "/models/prism.obj");
+        MeshComponent prismMesh = renderer.loadMesh(EXAMPLE_NAME + "/models/prism.obj");
 
         // Загружаем материал для призмы
         MaterialComponent prismMaterial = { renderer.addTexture(EXAMPLE_NAME + "/textures/prismfasetexturex.png") };

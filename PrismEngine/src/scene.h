@@ -11,6 +11,7 @@
 #include "componentManager.h"
 #include "systemManager.h"
 #include "resourceManager.h"
+#include "renderer.h"
 
 
 namespace prism {
@@ -225,11 +226,18 @@ namespace prism {
             bool removeResource() {
                 return resourceManager.remove<T>();
             }
+
+            void linkRenderer(prism::render::Renderer* renderer);
+            prism::render::Renderer* getRenderer();
+            void addMesh(Entity entity, MeshComponent mesh);
+            void delMesh(Entity entity);
+
         private:
             EntityManager entityManager;      /// Менеджер сущностей
             ComponentManager componentManager;/// Менеджер компонентов
             SystemManager systemManager;      /// Менеджер систем
             ResourceManager resourceManager;  /// Менеджер ресурсов
+            prism::render::Renderer* renderer = nullptr;
         };
     }
 }

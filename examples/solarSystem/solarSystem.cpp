@@ -2,6 +2,7 @@
 #include <timeResource.h>
 #include <inputResource.h>
 #include <inputSystem.h>
+#include "entity.h"
 #include "../examples.h"
 
 namespace solarSystem {
@@ -12,7 +13,7 @@ namespace solarSystem {
     using namespace prism::scene;
 
     struct PlanetaryBodyComponent {
-        Position* center;        // Центр орбиты
+        Entity parent = INVALID_ENTITY_ID;// Сущьность родитель для центра орбиты
         float orbitRadius = 0;      // Радиус орбиты
         float orbitalSpeed = 0;     // Скорость движения по орбите (градусов/секунду)
         float orbitAngle = 0;       // Текущий угол на орбите
@@ -37,9 +38,16 @@ namespace solarSystem {
                 planetary->orbitAngle += planetary->orbitalSpeed * scene->getResource<TimeResource>()->deltaTime;
 
                 // Вычисляем позицию на круговой орбите
+                Position centerPos = { 0, 0, 0 };
+                if (planetary->parent != INVALID_ENTITY_ID) {
+                    if (auto parentTransform = scene->getComponent<TransformComponent>(planetary->parent)) {
+                        centerPos = parentTransform->pos;
+                    }
+                }
+
                 float rad = glm::radians(planetary->orbitAngle);
-                transform->pos.x = planetary->center->x + planetary->orbitRadius * cos(rad);
-                transform->pos.z = planetary->center->z + planetary->orbitRadius * sin(rad);
+                transform->pos.x = centerPos.x + planetary->orbitRadius * cos(rad);
+                transform->pos.z = centerPos.z + planetary->orbitRadius * sin(rad);
             }
         }
 
@@ -135,14 +143,14 @@ namespace solarSystem {
     }
 
     Entity createPlanet(Scene& scene, prism::render::Renderer& renderer, std::string name,
-        float orbitRadius, float orbitalSpeed, float rotationSpeed, Position& center) {
+        float orbitRadius, float orbitalSpeed, float rotationSpeed, Entity perent=INVALID_ENTITY_ID) {
         Entity planet = scene.createEntity();
 
-        scene.addComponent(planet, renderer.addMesh(EXAMPLE_NAME + "/models/" + name + ".obj"));
+        scene.addComponent(planet, renderer.loadMesh(EXAMPLE_NAME + "/models/" + name + ".obj"));
         scene.addComponent(planet, MaterialComponent{ renderer.addTexture(EXAMPLE_NAME + "/textures/" + name + ".png") });
 
         scene.addComponent(planet, TransformComponent{ {}, {90, 0, 0}, { 300, 300, 300 } });
-        scene.addComponent(planet, PlanetaryBodyComponent{ &center, orbitRadius, orbitalSpeed, 0, rotationSpeed });
+        scene.addComponent(planet, PlanetaryBodyComponent{ perent, orbitRadius, orbitalSpeed, 0, rotationSpeed });
 
         return planet;
     }
@@ -162,22 +170,22 @@ namespace solarSystem {
         renderer.init();
 
         // Загрузка ресурсов
-        MeshComponent skyboxMesh = renderer.addMesh(EXAMPLE_NAME + "/models/skybox2.obj");
+        MeshComponent skyboxMesh =
+            renderer.loadMesh(EXAMPLE_NAME + "/models/skybox2.obj");
         MaterialComponent skyboxMaterial = { renderer.addTexture(EXAMPLE_NAME + "/textures/lambert1_emissive.jpeg") };
 
-        Position center = { 0, 0, 0 };
 
-        Entity sun = createPlanet(scene, renderer, "Sun", 0.0f, 0.0f, 0.0f, center);
-        createPlanet(scene, renderer, "Mercury", 100.0f, 15.0f, 8.0f, center);
-        createPlanet(scene, renderer, "Venus", 150.0f, 12.0f, 6.0f, center);
-        Entity earth = createPlanet(scene, renderer, "Earth", 200.0f, 10.0f, 10.0f, center);
-        createPlanet(scene, renderer, "Moon", 15.0f, 30.0f, 5.0f, scene.getComponent<TransformComponent>(earth)->pos);
-        createPlanet(scene, renderer, "Mars", 250.0f, 8.0f, 9.0f, center);
-        createPlanet(scene, renderer, "Jupiter", 350.0f, 5.0f, 15.0f, center);
-        Entity saturn = createPlanet(scene, renderer, "Saturn", 450.0f, 4.0f, 12.0f, center);
-        createPlanet(scene, renderer, "SaturnRing", 0.0f, 0.0f, 8.0f, scene.getComponent<TransformComponent>(saturn)->pos);
-        Entity uranus = createPlanet(scene, renderer, "Uranus", 550.0f, 3.0f, 10.0f, center);
-        createPlanet(scene, renderer, "UranusRing", 0.0f, 0.0f, 6.0f, scene.getComponent<TransformComponent>(uranus)->pos);
+        Entity sun = createPlanet(scene, renderer, "Sun", 0.0f, 0.0f, 0.0f);
+        createPlanet(scene, renderer, "Mercury", 100.0f, 15.0f, 8.0f);
+        createPlanet(scene, renderer, "Venus", 150.0f, 12.0f, 6.0f);
+        Entity earth = createPlanet(scene, renderer, "Earth", 200.0f, 10.0f, 10.0f);
+        createPlanet(scene, renderer, "Moon", 15.0f, 30.0f, 5.0f, earth);
+        createPlanet(scene, renderer, "Mars", 250.0f, 8.0f, 9.0f);
+        createPlanet(scene, renderer, "Jupiter", 350.0f, 5.0f, 15.0f);
+        Entity saturn = createPlanet(scene, renderer, "Saturn", 450.0f, 4.0f, 12.0f);
+        createPlanet(scene, renderer, "SaturnRing", 0.0f, 0.0f, 8.0f, saturn);
+        Entity uranus = createPlanet(scene, renderer, "Uranus", 550.0f, 3.0f, 10.0f);
+        createPlanet(scene, renderer, "UranusRing", 0.0f, 0.0f, 6.0f, uranus);
 
         renderer.updateMeshes();
         

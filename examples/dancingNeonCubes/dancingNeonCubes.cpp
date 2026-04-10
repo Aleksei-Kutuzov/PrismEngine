@@ -103,10 +103,13 @@ namespace dancingNeonCubes {
         //renderer.settings.
         renderer.settings.defaultPipeline.shaders = { "vert.spv", "frag.spv", EXAMPLE_NAME + "/shaders/" };
         renderer.init();
+            
+
+        std::cout << "EXAMPLE_NAME" << EXAMPLE_NAME;
 
         // Загрузка ресурсов
-        MeshComponent cubeMesh = renderer.addMesh(EXAMPLE_NAME + "/models/neoncube.obj");
-        MeshComponent planeMesh = renderer.addMesh(EXAMPLE_NAME + "/models/plane.obj");
+        MeshComponent cubeMesh = renderer.loadMesh(EXAMPLE_NAME + "/models/neoncube.obj");
+        MeshComponent planeMesh = renderer.loadMesh(EXAMPLE_NAME + "/models/plane.obj");
         renderer.updateMeshes();
         MaterialComponent cubeMaterial = { renderer.addTexture(EXAMPLE_NAME + "/textures/neoncube.png") };
         MaterialComponent backMaterial = { renderer.addTexture(EXAMPLE_NAME + "/textures/back.jpeg") };
