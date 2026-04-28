@@ -3,6 +3,11 @@
 #include "transformComponent.h"
 #include "materialComponent.h"
 #include "lightsComponent.h"
+#include "linker.h"
+
+void prism::scene::RenderSystem::start() {
+    renderer = prism::linker.find<prism::scene::Scene, prism::render::Renderer>(scene);
+}
 
 void prism::scene::RenderSystem::update()
 {
@@ -29,7 +34,7 @@ void prism::scene::RenderSystem::update()
             MeshComponent* mesh = scene->getComponent<MeshComponent>(entity);
             MaterialComponent* material = scene->getComponent<MaterialComponent>(entity);
 
-            if (!mesh || mesh->id == INVALID_REGISTRY_ID || !transform) continue;
+            if (!mesh || mesh->id == INVALID_DATA_HANDLE || !transform) continue;
             if (!material) material = &defaultMaterial;
 
             // Группируем по registry ID для инстансинга

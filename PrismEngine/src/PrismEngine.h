@@ -15,3 +15,6 @@
 
 #include "stComponents.h"
 #include "stSystems.h"
+#include "stResources.h"
+
+#include "linker.h"

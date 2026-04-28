@@ -1,12 +1,9 @@
 #include "renderer.h"
+#include "scene.h"
 #include "meshManager.h"
 #include <gtc/quaternion.hpp>
+#include "linker.h"
 
-
-void prism::render::Renderer::linkWindow(prism::scene::WindowResource* window)
-{
-	this->window = window;
-}
 
 prism::render::Renderer::~Renderer()
 {
@@ -17,8 +14,10 @@ void prism::render::Renderer::init()
 	pgc.windowResized = &window->windowResized;
 	pgc.windowMinimized = &window->windowMinimized;
 	pgc.init(this->settings);
+	
+	meshDataPool = new prism::scene::MeshDataPool();
 
-	meshRegistry = std::make_unique<MeshRegistry>();
+	linker.find<Renderer, prism::scene::Scene>(this)->registerDataPool(meshDataPool);
 }
 
 bool prism::render::Renderer::isRenderingActive()
@@ -280,7 +279,7 @@ void prism::render::Renderer::bindObjectsData()
 void prism::render::Renderer::drawMesh(prism::scene::MeshComponent mesh, uint32_t instanceCount, uint32_t firstIndex)
 {
 	uint16_t subMeshCount;
-	const uint32_t* subMeshIds = meshRegistry->get(mesh, subMeshCount);
+	const uint32_t* subMeshIds = meshDataPool->get(mesh, subMeshCount);
 
 	if (!subMeshIds) return;
 
@@ -325,14 +324,14 @@ prism::scene::MeshComponent prism::render::Renderer::loadMesh(const std::string&
 	auto subMeshIds = pgc.meshManager.addMesh(path);
 
 	if (subMeshIds.empty()) {
-		return { prism::scene::INVALID_REGISTRY_ID };
+		return prism::scene::MeshComponent::invalid();
 	}
 
-	return meshRegistry->add(subMeshIds.data(), static_cast<uint16_t>(subMeshIds.size()));
+	return meshDataPool->add(subMeshIds.data(), static_cast<uint16_t>(subMeshIds.size()));
 }
 
 const uint32_t* prism::render::Renderer::getMeshSubMeshes(prism::scene::MeshComponent mesh, uint16_t& outCount) const {
-	return meshRegistry->get(mesh, outCount);
+	return meshDataPool->get(mesh, outCount);
 }
 
 void prism::render::Renderer::updateMeshes()
@@ -343,7 +342,7 @@ void prism::render::Renderer::updateMeshes()
 void prism::render::Renderer::clearMeshes()
 {
 	pgc.meshManager.clear();
-	meshRegistry->cleanup();
+	meshDataPool->cleanup();
 }
 
 void prism::render::Renderer::awaitRenderingCompletion()
@@ -354,9 +353,9 @@ void prism::render::Renderer::awaitRenderingCompletion()
 void prism::render::Renderer::destroy()
 {
 	awaitRenderingCompletion();
-	if (meshRegistry) {
-		meshRegistry->cleanup();
-		meshRegistry.reset();
+	if (meshDataPool) {
+		meshDataPool->cleanup();
+		delete meshDataPool;
 	}
 	
 	pgc.cleanup();
@@ -364,6 +363,17 @@ void prism::render::Renderer::destroy()
 
 void prism::render::Renderer::setDefaultSettings()
 {
+	prism::scene::Scene* scene = prism::linker.find<Renderer, prism::scene::Scene>(this);
+	if (!scene) {
+		prism::logger::logError(prism::logger::Error::NO_FOUND_LINK_TO_OBJECT, std::string("TYPE1=") + typeid(*this).name() + ", TYPE2 = {}");
+	};
+
+	this->window = scene->getResource<prism::scene::WindowResource>();
+
+	if (!window) {
+		prism::logger::logError(prism::logger::Error::NO_FOUND_WINDOW_RESOURCE);
+	}
+
 	settings.app.applicationName = SDL_GetWindowTitle(window->getSDLWindow());
 	settings.app.applicationVersion = { 1, 0, 0 };
 	settings.window = window->getSDLWindow();

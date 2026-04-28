@@ -7,7 +7,8 @@ namespace prism {
 	namespace scene {
         class RenderSystem : public ISystem {
         public:
-            RenderSystem(Scene* scene, render::Renderer* renderer) : scene(scene), renderer(renderer) {}
+            RenderSystem(Scene* scene) : scene(scene) {}
+            void start() override;
             void update() override;
 
         private:

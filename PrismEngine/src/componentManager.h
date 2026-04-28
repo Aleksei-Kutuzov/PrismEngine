@@ -1,5 +1,4 @@
 #pragma once
-#include "entity.h"
 #include <unordered_map>
 #include <set>
 #include <typeindex>
@@ -7,6 +6,8 @@
 #include <algorithm>
 #include <iterator>
 #include <vector>
+#include "entity.h"
+#include "registerPool.h"
 
 namespace prism {
     namespace scene {
@@ -31,6 +32,8 @@ namespace prism {
             bool addComponent(Entity entityId, T&& component) {
                auto& storage = getComponentStorage<std::decay_t<T>>();
 				storage.addComponent(entityId, std::forward<T>(component));
+
+                if constexpr (is_data_handle<std::decay<T>>::value) notifyPoolAdded(component);
                 return true;
             }
 
@@ -40,6 +43,10 @@ namespace prism {
             /// @return true если компонент существовал и был удален, false в противном случае
             template<typename T>
             bool removeComponent(Entity entityId) {
+                if constexpr (is_data_handle<std::decay<T>>::value) {
+                    if (auto* component = getComponent<T>(entityId)) notifyPoolRemoved(*component);
+                }
+
                 ComponentStorage<T>& storage = getComponentStorage<T>();
 				return storage.removeComponent(entityId);
             }
@@ -132,6 +139,35 @@ namespace prism {
             /// @brief Удаляет все компоненты у сущности
             /// @param entityId Идентификатор сущности
             void removeAllComponents(Entity entityId);
+
+            /// @brief Регистрирует внешний пул данных
+            /// @tparam Handle Тип хендла: DataHandle<DataType, TagType>
+            /// @param pool Указатель на пул (владение остаётся у вызывающего)
+            template<typename Handle>
+            void registerDataPool(DataPool<Handle>* pool) {
+                if (!pool) return;
+                using Tag = typename Handle::TagType;
+                dataPools[std::type_index(typeid(Tag))] = RegisteredPool::make(pool);
+            }
+
+            /// @brief Получает данные из зарегистрированного пула
+            /// @tparam Handle Тип хендла
+            /// @param handle Хендл на данные
+            /// @param outSize Выходной параметр: размер массива
+            template<typename Handle>
+            const typename Handle::DataType* getDataFromPool(Handle handle, uint16_t& outSize) const {
+                outSize = 0;
+                if (!handle.isValid()) return nullptr;
+
+                using Tag = typename Handle::TagType;
+                auto it = dataPools.find(std::type_index(typeid(Tag)));
+                if (it == dataPools.end()) return nullptr;
+
+                if (auto* pool = it->second.get<Handle>()) {
+                    return pool->get(handle, outSize);
+                }
+                return nullptr;
+            }
 
         private:
             /// @brief Базовый интерфейс хранилища компонентов
@@ -227,8 +263,33 @@ namespace prism {
                 return static_cast<const ComponentStorage<T>*>(it->second.get());
             }
 
+            template<typename Handle>
+            void notifyPoolAdded(Handle handle) {
+                if (!handle.isValid()) return;
+                using Tag = typename Handle::TagType;
+                auto it = dataPools.find(std::type_index(typeid(Tag)));
+                if (it != dataPools.end()) {
+                    if (auto* pool = it->second.get<Handle>()) {
+                        pool->addRef(handle);
+                    }
+                }
+            }
+
+            template<typename Handle>
+            void notifyPoolRemoved(Handle handle) {
+                if (!handle.isValid()) return;
+                using Tag = typename Handle::TagType;
+                auto it = dataPools.find(std::type_index(typeid(Tag)));
+                if (it != dataPools.end()) {
+                    if (auto* pool = it->second.get<Handle>()) {
+                        pool->remove(handle);
+                    }
+                }
+            }
+
             // Карта "тип -> хранилище"
             std::unordered_map<std::type_index, std::unique_ptr<IComponentStorage>> componentStorages;
+            std::unordered_map<std::type_index, RegisteredPool> dataPools;
         };
     }
 }

@@ -5,13 +5,10 @@
 #include "meshComponent.h"
 #include "windowResource.h"
 #include "transformComponent.h"
-#include "bufferObjects.h"
-#include "registryResourceTemplate.h"
+#include "scene.h"
 
 namespace prism {
 	namespace render {
-		using MeshRegistry = RegistryResourceTemplate<uint32_t, prism::scene::MeshTag>;
-
 		struct InstanceData
 		{
 			prism::scene::TransformComponent* transform;
@@ -27,7 +24,6 @@ namespace prism {
 	   {
 	   public:
 			Renderer() : window(nullptr) {};
-			void linkWindow(prism::scene::WindowResource* window);
 			void setDefaultSettings();
 			void init();
 			~Renderer();
@@ -62,7 +58,7 @@ namespace prism {
 			friend class prism::scene::Scene;
 		private:
 
-			std::unique_ptr<MeshRegistry> meshRegistry;
+			prism::scene::MeshDataPool* meshDataPool;
 
 			PGC::PrismGraphicCore pgc;
 			prism::scene::WindowResource* window;

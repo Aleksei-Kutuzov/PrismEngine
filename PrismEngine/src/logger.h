@@ -29,6 +29,8 @@ namespace prism::logger {
         FAILED_TO_DETERMINE_FILE_SIZE,
         FAILED_TO_READ_FILE,
         RENDERER_IS_NOT_INSTALLED_FOR_SCENE,
+        NO_FOUND_LINK_TO_OBJECT,
+        NO_FOUND_WINDOW_RESOURCE,
     };
 
     /**

@@ -11,8 +11,8 @@
 #include "componentManager.h"
 #include "systemManager.h"
 #include "resourceManager.h"
-#include "renderer.h"
-
+#include "meshComponent.h"
+#include "linker.h"
 
 namespace prism {
 	namespace scene {
@@ -227,17 +227,39 @@ namespace prism {
                 return resourceManager.remove<T>();
             }
 
-            void linkRenderer(prism::render::Renderer* renderer);
-            prism::render::Renderer* getRenderer();
-            void addMesh(Entity entity, MeshComponent mesh);
-            void delMesh(Entity entity);
+            /// @brief Регистрирует внешний пул данных для автоматического управления жизненным циклом
+            /// @tparam Handle Тип хендла: DataHandle<DataType, TagType>
+            /// @param pool Указатель на пул (владение остаётся у вызывающей стороны)
+            /// @details После регистрации при добавлении/удалении компонента-хендла автоматически
+            ///          вызывается addRef()/remove() соответствующего пула.
+            /// @warning Время жизни pool должно превышать время жизни сцены
+            /// @see prism::scene::ComponentManager::registerDataPool
+            template<typename Handle>
+            void registerDataPool(DataPool<Handle>* pool) {
+                componentManager.registerDataPool(pool);
+            }
+
+            /// @brief Получает сырые данные из зарегистрированного пула по хендлу
+            /// @tparam Handle Тип хендла: DataHandle<DataType, TagType>
+            /// @param handle Хендл на данные
+            /// @param outSize Выходной параметр: количество элементов в массиве
+            /// @return Указатель на данные типа DataType или nullptr при ошибке
+            /// @details Возвращает const-указатель только для чтения. Данные валидны пока
+            ///          существует пул и refCount > 0.
+            /// @see prism::scene::ComponentManager::getDataFromPool
+            template<typename Handle>
+            const typename Handle::DataType* getDataFromPool(Handle handle, uint16_t& outSize) {
+                componentManager.getDataFromPool(handle, outSize);
+            }
 
         private:
             EntityManager entityManager;      /// Менеджер сущностей
             ComponentManager componentManager;/// Менеджер компонентов
             SystemManager systemManager;      /// Менеджер систем
             ResourceManager resourceManager;  /// Менеджер ресурсов
-            prism::render::Renderer* renderer = nullptr;
         };
+
+        template<>
+        bool Scene::removeComponent<MeshComponent>(Entity entityId);
     }
 }
