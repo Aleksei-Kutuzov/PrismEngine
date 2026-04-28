@@ -1,7 +1,5 @@
 #include "scene.h"
 #include "linker.h"
-#include "renderer.h"
-
 
 prism::scene::Entity prism::scene::Scene::createEntity()
 {
