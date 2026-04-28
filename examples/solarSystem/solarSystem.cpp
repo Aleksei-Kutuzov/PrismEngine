@@ -163,8 +163,9 @@ namespace solarSystem {
         scene.setResource<WindowResource>(WindowResource::CreateCentered("The solar system model", WINDOW_WIDTH, WINDOW_HEIGHT));
         prism::render::Renderer renderer;
 
+        prism::linker.link(&scene, &renderer);
+
         // Настройка рендерера
-        renderer.linkWindow(scene.getResource<WindowResource>());
         renderer.setDefaultSettings();
         renderer.settings.defaultPipeline.shaders = { "albedo-vert.spv", "albedo-frag.spv", EXAMPLE_NAME + "/shaders/" };
         renderer.init();
@@ -198,7 +199,7 @@ namespace solarSystem {
         // Системы
         scene.registerSystem<TimeSystem>(&scene);
         scene.registerSystem<InputSystem>(&scene);
-        scene.registerSystem<RenderSystem>(&scene, &renderer);
+        scene.registerSystem<RenderSystem>(&scene);
         scene.registerSystem<FlyCameraSystem>(&scene);
         scene.registerSystem<PlanetarySystem>(&scene);
 

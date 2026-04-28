@@ -97,8 +97,9 @@ namespace dancingNeonCubes {
         scene.setResource<WindowResource>(window);
         prism::render::Renderer renderer;
 
+        prism::linker.link(&scene, &renderer);
+
         // Настройка рендерера
-        renderer.linkWindow(scene.getResource<WindowResource>());
         renderer.setDefaultSettings();
         //renderer.settings.
         renderer.settings.defaultPipeline.shaders = { "vert.spv", "frag.spv", EXAMPLE_NAME + "/shaders/" };
@@ -123,7 +124,7 @@ namespace dancingNeonCubes {
         // Системы
         scene.registerSystem<TimeSystem>(&scene);  // система обновления времени
         scene.registerSystem<InputSystem>(&scene);
-        scene.registerSystem<RenderSystem>(&scene, &renderer);
+        scene.registerSystem<RenderSystem>(&scene);
         scene.registerSystem<DancingNeonCubesSystem>(&scene);
 
         // Камера

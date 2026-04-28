@@ -1,7 +1,4 @@
 #include "PrismEngine.h"
-#include <timeResource.h>
-#include <inputSystem.h>
-#include <windowResource.h>
 #include "../examples.h"
 
 namespace spinningPrism {
@@ -84,9 +81,13 @@ namespace spinningPrism {
         WindowResource window = WindowResource::CreateCentered("The solar system model", WINDOW_WIDTH, WINDOW_HEIGHT);
         scene.setResource<WindowResource>(window);
 
-        // Создаем и настраиваем рендерер
+        // Создаем рендерер
         prism::render::Renderer renderer;
-        renderer.linkWindow(scene.getResource<WindowResource>());
+
+        // Линкуем рендедер с сцену
+        prism::linker.link(&renderer, &scene);
+
+        // setDefaultSettings требует слинкованную с рендером сцену, содержашую ресурс окна
         renderer.setDefaultSettings();
 
         // Указываем пути к шейдерам (программы для видеокарты)
@@ -95,6 +96,7 @@ namespace spinningPrism {
             "frag.spv",
             EXAMPLE_NAME + "/shaders/"
         };
+
         renderer.init();
 
         // ========== ШАГ 2: ЗАГРУЗКА РЕСУРСОВ ==========
@@ -113,6 +115,7 @@ namespace spinningPrism {
         // Добавляем ресурс времени
         TimeResource timeRes{};
         timeRes.setFPSCap(targetFps);
+
         scene.setResource<TimeResource>(timeRes);
 
         scene.setResource<InputResource>(InputResource{});
@@ -122,7 +125,7 @@ namespace spinningPrism {
         scene.registerSystem<TimeSystem>(&scene);
 
         // Регистрируем систему рендеринга (отвечает за отрисовку)
-        scene.registerSystem<RenderSystem>(&scene, &renderer);
+        scene.registerSystem<RenderSystem>(&scene);
 
         // Регистрируем нашу кастомную систему вращения
         scene.registerSystem<RotationSystem>(&scene);
