@@ -102,7 +102,7 @@ void prism::PGC::L1::SwapChain::recreate()
 {
     awaitRenderingCompletion();
 
-    cleanup();
+    cleanupImpl();
 
     createImpl();
     createImageViews();
