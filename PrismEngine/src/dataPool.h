@@ -1,22 +1,29 @@
 #pragma once
 #include <stack>
 #include <vector>
-#include "meshComponent.h"
-#include "registryComponentTemplate.h"
-#include "scene.h"
+#include "dataHandle.h"
 
 namespace prism {
-    namespace render {
-		template <typename T, typename Tag>
-		class RegistryResourceTemplate {
+    namespace scene {
+		template <typename Handle>
+		class DataPool {
 		public:
+
+            using DataType = typename Handle::DataType;
+            using TagType = typename Handle::TagType;
+            using HandleType = Handle;
+
             struct Item {
-                T* data = nullptr;
+                DataType* data = nullptr;
                 uint16_t size = 0;
                 uint16_t refCount = 0;
                 bool isActive = false;
 
                 Item() = default;
+
+                void cleanup() {
+                    if (data) { free(data); data = nullptr; }
+                }
             };
 
             struct Stats {
@@ -27,20 +34,20 @@ namespace prism {
             };
 
             template <std::size_t N>
-            scene::RegistryComponentTemplate<Tag> add(const std::array<T, N>& data) {
-                return add(data.data(), static_cast<uint16_t>(data.size()));
+            HandleType add(const std::array<DataType, N>& data) {
+                return add(data.data(), static_cast<uint16_t>(N));
             }
 
-            scene::RegistryComponentTemplate<Tag> add(const T* data, uint16_t size) {
-                if (!data || size == 0) return { scene::INVALID_REGISTRY_ID };
+            HandleType add(const DataType* data, uint16_t size) {
+                if (!data || size == 0) return HandleType::invalid();
                 
-                T* newData = static_cast<T*>(malloc(size * sizeof(T)));
+                auto* newData = static_cast<DataType*>(malloc(size * sizeof(DataType)));
 
-                if (!newData) return { scene::INVALID_REGISTRY_ID };
+                if (!newData) return HandleType::invalid();
                 
                 uint32_t id = getNextId();
 
-                memcpy(newData, data, size * sizeof(T));
+                memcpy(newData, data, size * sizeof(DataType));
 
                 auto& item = items[id];
                 item.data = newData;
@@ -49,24 +56,30 @@ namespace prism {
                 item.isActive = true;
                 activeCount++;
                 stats.totalAllocations++;
-                stats.totalMemory += size * sizeof(T);
+                stats.totalMemory += size * sizeof(DataType);
 
-                return { id };
+                return HandleType{id};
             }
 
-            const T* get(scene::RegistryComponentTemplate<Tag> component, uint16_t& outSize) const {
-                if (component.id >= items.size() || !items[component.id].isActive) {
-                    outSize = 0;
-                    return nullptr;
-                }
-                outSize = items[component.id].size;
-                return items[component.id].data;
+            const DataType* get(HandleType handle, uint16_t& outSize) const {
+                outSize = 0;
+                if (!handle.isValid() || handle.id >= items.size()) return nullptr;
+                
+                const auto& item = items[handle.id];
+                if (!item.isActive) return nullptr;
+
+                outSize = items[handle.id].size;
+                return items[handle.id].data;
             }
 
             void addRef(uint32_t id) {
                 if (id < items.size() && items[id].isActive) {
                     items[id].refCount++;
                 }
+            }
+
+            void addRef(HandleType handle) {
+                if (handle.isValid()) addRef(handle.id);
             }
 
             void remove(uint32_t id) {
@@ -79,8 +92,19 @@ namespace prism {
                     items[id].isActive = false;
                     activeCount--;
                     stats.totalAllocations--;
-                    stats.totalMemory -= items[id].size * sizeof(T);
+                    stats.totalMemory -= items[id].size * sizeof(DataType);
                     freeIds.push(id);
+                }
+            }
+
+            void remove(HandleType handle) {
+                if (handle.isValid()) remove(handle.id);
+            }
+
+            void forceRemove(HandleType handle) {
+                if (handle.isValid() && handle.id < items.size() && items[handle.id].isActive) {
+                    items[handle.id].refCount = 1;
+                    remove(handle);
                 }
             }
 
@@ -88,21 +112,19 @@ namespace prism {
                 Stats res = stats;
                 res.activeItems = activeCount;
                 res.freeIds = freeIds.size();
-                return stats;
+                return res;
             }
 
             void cleanup() {
-                for (auto& item : items) {
-                    if (item.isActive && item.data) {
-                        free(item.data);
-                    }
-                }
+                for (auto& item : items) item.cleanup();
                 items.clear();
-                freeIds = std::stack<uint32_t>();
+                while (!freeIds.empty()) freeIds.pop();
                 activeCount = 0;
+                maxId = 0;
+                stats = Stats{};
             }
 
-            ~RegistryResourceTemplate() {
+            ~DataPool() {
                 cleanup();
             }
 
