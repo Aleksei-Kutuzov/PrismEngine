@@ -44,7 +44,8 @@ namespace prism::logger {
             {Error::FAILED_TO_READ_FILE, "Failed to read file"},
             {Error::RENDERER_IS_NOT_INSTALLED_FOR_SCENE, "The renderer is not installed for the scene, but it was required due to the graphics method call"},
             {Error::NO_FOUND_LINK_TO_OBJECT, "A TYPE1 object requested a link to a TYPE2 object, but they were not linked"},
-            {Error::NO_FOUND_WINDOW_RESOURCE, "No found WindowResource in scene"}
+            {Error::NO_FOUND_WINDOW_RESOURCE, "No found WindowResource in scene"},
+            {Error::ERROR_GETTING_BASE_PATH, "Error getting the base path"}
         };
     }
 
