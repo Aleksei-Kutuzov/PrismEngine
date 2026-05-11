@@ -12,6 +12,8 @@
 #include "pipelineSettings.h"
 
 namespace prism {
+	using PipelineIndex = size_t;
+
 	namespace PGC {
 		namespace utils {
 			struct QueueFamilyIndices {
@@ -84,7 +86,7 @@ namespace prism {
 				VkDescriptorSetLayout descriptorSetLayout;
 
 				VkPipelineLayout pipelineLayout;
-				VkPipeline graphicsPipeline;
+				PipelineIndex defaultGraphicsPipelineIndex;
 
 				VkCommandPool commandPool;
 				std::vector<VkCommandBuffer> commandBuffers;

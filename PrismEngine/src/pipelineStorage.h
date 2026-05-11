@@ -11,14 +11,14 @@ class PipelineStorage : public L1_Object<PipelineStorage> {
 public:
 	void createImpl();
 	void cleanupImpl();
-	size_t add(utils::PipelineSettings pipelineSettings);
-	VkPipeline get(size_t index);
+	PipelineIndex add(utils::PipelineSettings pipelineSettings);
+	VkPipeline get(PipelineIndex index);
 	void remove(VkPipeline pipeline);
 
 private:
 	void createPipeline(VkPipeline* graphicsPipeline, utils::PipelineSettings pipelineSettings);
 		
-	std::map<size_t, VkPipeline> pipelines;
+	std::map<PipelineIndex, VkPipeline> pipelines;
 	PGC::L2::ShaderStagesLoader* shaderStagesLoader;
 };
 END_NAMESPACE_DECLARATION

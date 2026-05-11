@@ -14,10 +14,10 @@ void prism::render::Renderer::init()
 	pgc.windowResized = &window->windowResized;
 	pgc.windowMinimized = &window->windowMinimized;
 	pgc.init(this->settings);
-	
-	meshDataPool = new prism::scene::MeshDataPool();
 
-	linker.find<Renderer, prism::scene::Scene>(this)->registerDataPool(meshDataPool);
+	prism::scene::Scene* scene = linker.find<Renderer, prism::scene::Scene>(this);
+	scene->registerDataPool<prism::scene::MeshDataPool::HandleType>();
+	scene->registerDataPool<prism::scene::MaterialDataPool>();
 }
 
 bool prism::render::Renderer::isRenderingActive()
@@ -192,10 +192,10 @@ void prism::render::Renderer::updateCamera(prism::scene::TransformComponent* tra
 	memcpy(pgc.context.uniformBuffers[pgc.context.currentFrame].cameraMapped, &cameraUbo, sizeof(cameraUbo));
 }
 
-void prism::render::Renderer::updateInstances(std::vector<InstanceData> renderData)
+void prism::render::Renderer::updateRenderObjects(std::vector<prism::render::RenderObjectBatch>& renderObject)
 {
 	std::vector<prism::PGC::ObjectSSBO> allObjectsData;
-	for (auto& obj : renderData) {
+	for (auto& obj : renderObject) {
 		prism::PGC::ObjectSSBO data;
 		data.model = glm::mat4(1.0f);
 		data.model = glm::translate(data.model, glm::vec3(obj.transform->pos.x, obj.transform->pos.y, obj.transform->pos.z));
@@ -204,10 +204,10 @@ void prism::render::Renderer::updateInstances(std::vector<InstanceData> renderDa
 
 		data.normals = glm::transpose(glm::inverse(data.model));
 
-		data.texture = obj.texture->texture;
+		data.material = *obj.subMaterial;
 		allObjectsData.push_back(data);
 	}
-
+	
 	memcpy((char*)pgc.context.storageBuffers[pgc.context.currentFrame].objectMapped,
 		allObjectsData.data(),
 		allObjectsData.size() * sizeof(prism::PGC::ObjectSSBO));
@@ -232,9 +232,14 @@ void prism::render::Renderer::updateLights(LightData* lightData)
 	}
 }
 
+void prism::render::Renderer::bindPipeline(PipelineIndex pipeline)
+{
+	vkCmdBindPipeline(pgc.context.commandBuffers[pgc.context.currentFrame], VK_PIPELINE_BIND_POINT_GRAPHICS, pgc.pipelineStorage.get(pipeline));
+}
+
 void prism::render::Renderer::bindDefault()
 {
-	vkCmdBindPipeline(pgc.context.commandBuffers[pgc.context.currentFrame], VK_PIPELINE_BIND_POINT_GRAPHICS, pgc.context.graphicsPipeline);
+	bindPipeline(pgc.context.defaultGraphicsPipelineIndex);
 
 	VkViewport viewport{};
 	viewport.x = 0.0f;
@@ -276,24 +281,17 @@ void prism::render::Renderer::bindObjectsData()
 		0, nullptr);
 }
 
-void prism::render::Renderer::drawMesh(prism::scene::MeshComponent mesh, uint32_t instanceCount, uint32_t firstIndex)
+void prism::render::Renderer::drawMesh(prism::scene::MeshComponent::DataType subMesh, uint32_t instanceCount, uint32_t firstIndex)
 {
-	uint16_t subMeshCount;
-	const uint32_t* subMeshIds = meshDataPool->get(mesh, subMeshCount);
-
-	if (!subMeshIds) return;
-
-	for (uint16_t i = 0; i < subMeshCount; i++) {
-		const PGC::SubMesh& info = pgc.meshManager.getSubMeshInfo(subMeshIds[i]);
-		vkCmdDrawIndexed(
-			pgc.context.commandBuffers[pgc.context.currentFrame],
-			info.indexCount,
-			instanceCount,
-			info.indexOffset,
-			info.vertexOffset,
-			firstIndex
-		);
-	}
+	const PGC::SubMesh& info = pgc.meshManager.getSubMeshInfo(subMesh);
+	vkCmdDrawIndexed(
+		pgc.context.commandBuffers[pgc.context.currentFrame],
+		info.indexCount,
+		instanceCount,
+		info.indexOffset,
+		info.vertexOffset,
+		firstIndex
+	);
 }
 
 prism::TextureId prism::render::Renderer::addTexture(const std::string& texturePath)
@@ -301,38 +299,43 @@ prism::TextureId prism::render::Renderer::addTexture(const std::string& textureP
 	return pgc.textureStorage.load(texturePath);
 }
 
-bool prism::render::Renderer::removeTexture(TextureId texture)
+std::string prism::render::Renderer::getTexturePath(TextureId texture)
 {
-	return pgc.textureStorage.remove(texture);
+	return pgc.textureStorage.get(texture).path.string();
 }
 
-void prism::render::Renderer::remodeMaterial(scene::MaterialComponent material)
+void prism::render::Renderer::removeTexture(TextureId texture)
 {
-	if (!material.texture)
-	{
-		pgc.textureStorage.remove(material.texture);
-	}
+	return pgc.textureStorage.unload(texture);
 }
+
 
 void prism::render::Renderer::clearTextures()
 {
 	pgc.textureStorage.cleanup();
 }
 
+prism::render::MaterialBuilder prism::render::Renderer::materialBuilder()
+{
+	return 	MaterialBuilder(*linker.find<Renderer, prism::scene::Scene>(this), pgc.textureStorage);
+}
+
+prism::scene::PipelineComponent prism::render::Renderer::getDefaultPipeline()
+{
+	return prism::scene::PipelineComponent{ pgc.context.defaultGraphicsPipelineIndex };
+}
+
 prism::scene::MeshComponent prism::render::Renderer::loadMesh(const std::string& path)
 {
-	auto subMeshIds = pgc.meshManager.addMesh(path);
+	auto subMeshIds = pgc.meshManager.load(path);
 
 	if (subMeshIds.empty()) {
 		return prism::scene::MeshComponent::invalid();
 	}
-
-	return meshDataPool->add(subMeshIds.data(), static_cast<uint16_t>(subMeshIds.size()));
+	prism::scene::Scene* scene = linker.find<Renderer, prism::scene::Scene>(this);
+	return scene->addDataToPool<prism::scene::MeshComponent>(subMeshIds.data(), static_cast<uint16_t>(subMeshIds.size()));
 }
 
-const uint32_t* prism::render::Renderer::getMeshSubMeshes(prism::scene::MeshComponent mesh, uint16_t& outCount) const {
-	return meshDataPool->get(mesh, outCount);
-}
 
 void prism::render::Renderer::updateMeshes()
 {
@@ -342,7 +345,8 @@ void prism::render::Renderer::updateMeshes()
 void prism::render::Renderer::clearMeshes()
 {
 	pgc.meshManager.clear();
-	meshDataPool->cleanup();
+	prism::scene::Scene* scene = linker.find<Renderer, prism::scene::Scene>(this);
+	scene->clearDataPool<prism::scene::MeshComponent>();
 }
 
 void prism::render::Renderer::awaitRenderingCompletion()
@@ -353,10 +357,8 @@ void prism::render::Renderer::awaitRenderingCompletion()
 void prism::render::Renderer::destroy()
 {
 	awaitRenderingCompletion();
-	if (meshDataPool) {
-		meshDataPool->cleanup();
-		delete meshDataPool;
-	}
+	prism::scene::Scene* scene = linker.find<Renderer, prism::scene::Scene>(this);
+	scene->clearDataPool<prism::scene::MaterialComponent>();
 	
 	pgc.cleanup();
 }

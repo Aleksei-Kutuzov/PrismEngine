@@ -14,6 +14,8 @@ namespace prism {
         private:
             prism::scene::Scene* scene;
             prism::render::Renderer* renderer;
+
+            std::vector<prism::render::RenderObjectBatch> batches;
         };
 	}
 }

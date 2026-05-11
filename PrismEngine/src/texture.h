@@ -8,10 +8,20 @@ namespace prism {
 	const TextureId INVALID_TEXTURE_ID = 0;
 
 	namespace PGC {
+		enum class TextureType : uint8_t {
+			ALBEDO,   // RGBA
+			NORMAL,   // RGBA UNORM
+			MRAO,     // RGBA UNORM (R=Metallic, G=Roughness, B=AO)
+			EMISSION  // RGBA UNORM
+		};
+
 		struct Texture
 		{
 			std::filesystem::path path;
 			uint32_t mipLevels = 1;
+
+			TextureType type = TextureType::ALBEDO;
+			VkFormat format = VK_FORMAT_UNDEFINED;
 
 			VkImage image;
 			VkImageView imageView;

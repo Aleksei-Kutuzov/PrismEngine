@@ -7,10 +7,10 @@
 #include "meshLoader.h"
 
 DECLARE_PGC_LAYER_INSTANCE(L1)
-class MeshManager : public L1_Object<MeshManager> {
+class MeshStorage : public L1_Object<MeshStorage> {
 public:
 	void createImpl();
-	prism::PGC::MeshIds addMesh(std::string texturePath);
+	prism::PGC::MeshIds load(std::string texturePath);
 	void update();
 	void clear();
 	void cleanupImpl();

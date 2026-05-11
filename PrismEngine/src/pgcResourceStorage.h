@@ -12,12 +12,13 @@ public:
 		this->loader = new Loader(this->context, this->settings);
 	};
 	
-	DataId load(std::filesystem::path path) {
+	template<typename... Args>
+	DataId load(std::filesystem::path path, Args&&... args) {
 		auto it = this->pathToId.find(path);
 		if (it != this->pathToId.end()) return it->second;
 
 		this->needUpdate = true;
-		return this->derived().loadImpl(this->loader->load(path));
+		return this->derived().loadImpl(this->loader->load(path, std::forward<Args>(args)...));
 	};
 	void unload(DataId id) { this->derived().unloadImpl(id); };
 	

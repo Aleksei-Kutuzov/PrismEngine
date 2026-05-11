@@ -4,16 +4,26 @@
 namespace prism {
     namespace scene {
         struct RegisteredPool {
-            void* ptr = nullptr;
+            using DeleterFunc = void(*)(void*);
+            std::unique_ptr<void, DeleterFunc> ptr;
+
+            RegisteredPool() noexcept : ptr(nullptr, nullptr) {}
 
             template<typename Handle>
             DataPool<Handle>* get() const {
-                return static_cast<DataPool<Handle>*>(ptr);
+                return static_cast<DataPool<Handle>*>(ptr.get());
             }
 
             template<typename Handle>
             static RegisteredPool make(DataPool<Handle>* p) {
-                return { static_cast<void*>(p) };
+                RegisteredPool result;
+                result.ptr = std::unique_ptr<void, DeleterFunc>(
+                    static_cast<void*>(p),
+                    [](void* p) {
+                        delete static_cast<DataPool<Handle>*>(p);
+                    }
+                );
+                return result;
             }
         };
 

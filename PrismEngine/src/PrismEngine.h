@@ -9,6 +9,7 @@
 
 #include "prismGraphicCore.h"
 #include "renderer.h"
+#include "pathes.h"
 #include "init.h"
 
 #include "PrismEngineECS.h"

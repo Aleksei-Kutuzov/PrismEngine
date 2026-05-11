@@ -227,16 +227,33 @@ namespace prism {
                 return resourceManager.remove<T>();
             }
 
-            /// @brief Регистрирует внешний пул данных для автоматического управления жизненным циклом
+            /// @brief Регистрирует пул данных для автоматического управления жизненным циклом
             /// @tparam Handle Тип хендла: DataHandle<DataType, TagType>
-            /// @param pool Указатель на пул (владение остаётся у вызывающей стороны)
-            /// @details После регистрации при добавлении/удалении компонента-хендла автоматически
-            ///          вызывается addRef()/remove() соответствующего пула.
-            /// @warning Время жизни pool должно превышать время жизни сцены
-            /// @see prism::scene::ComponentManager::registerDataPool
+            /// @details Создаёт внутренний пул для указанного типа хендла и берёт на себя владение им.
+            ///          При добавлении/удалении компонента, содержащего хендл этого типа, автоматически
+            ///          вызываются addRef()/remove() соответствующего пула для управления ссылками.
+            ///          Повторная регистрация того же типа (по TagType) игнорируется.
+            /// @note Пул создаётся при первом вызове и автоматически уничтожается при разрушении ComponentManager.
+            /// @see prism::scene::ComponentManager::getDataFromPool
+            /// @see prism::scene::DataPool
             template<typename Handle>
-            void registerDataPool(DataPool<Handle>* pool) {
-                componentManager.registerDataPool(pool);
+            void registerDataPool() {
+                componentManager.registerDataPool<Handle>();
+            }
+
+            template<typename Handle>
+            Handle addDataToPool(const typename Handle::DataType* data, uint16_t size) {
+                return componentManager.addDataToPool<Handle>(data, size);
+            }
+
+            template<typename Handle, std::size_t N>
+            Handle addDataToPool(const std::array<typename Handle::DataType, N>& data) {
+                return componentManager.addDataToPool<Handle, N>(data);
+            }
+
+            template<typename Handle>
+            void clearDataPool() {
+                componentManager.clearDataPool<Handle>();
             }
 
             /// @brief Получает сырые данные из зарегистрированного пула по хендлу
@@ -249,7 +266,7 @@ namespace prism {
             /// @see prism::scene::ComponentManager::getDataFromPool
             template<typename Handle>
             const typename Handle::DataType* getDataFromPool(Handle handle, uint16_t& outSize) {
-                componentManager.getDataFromPool(handle, outSize);
+                return componentManager.getDataFromPool(handle, outSize);
             }
 
         private:

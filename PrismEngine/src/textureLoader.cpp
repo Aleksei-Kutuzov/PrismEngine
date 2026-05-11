@@ -6,10 +6,23 @@
 #include <stdexcept>
 #include "pathes.h"
 
-prism::PGC::Texture prism::PGC::L2::TextureLoader::load(std::filesystem::path texturePath)
+static VkFormat getFormatFromType(prism::PGC::TextureType type) {
+    switch (type) {
+    case prism::PGC::TextureType::ALBEDO:   return VK_FORMAT_R8G8B8A8_SRGB;
+    case prism::PGC::TextureType::NORMAL:
+    case prism::PGC::TextureType::MRAO:
+    case prism::PGC::TextureType::EMISSION: return VK_FORMAT_R8G8B8A8_UNORM;
+    default:                                return VK_FORMAT_R8G8B8A8_SRGB;
+    }
+}
+
+prism::PGC::Texture prism::PGC::L2::TextureLoader::load(std::filesystem::path texturePath, TextureType type)
 {
 	PGC::Texture texture;
 	texture.path = basePath / texturesDir / texturePath;
+    texture.type = type;
+    texture.format = getFormatFromType(type);
+
 	createTextureImage(texture);
 	createTextureImageView(texture);
 	createTextureSampler(texture);
@@ -57,21 +70,21 @@ void prism::PGC::L2::TextureLoader::createTextureImage(PGC::Texture& texture)
 
     stbi_image_free(pixels);
 
-    PGC::L3::ResourcesCreater::createImage(context, texWidth, texHeight, texture.mipLevels, VK_SAMPLE_COUNT_1_BIT, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, texture.image, texture.imageMemory);
+    PGC::L3::ResourcesCreater::createImage(context, texWidth, texHeight, texture.mipLevels, VK_SAMPLE_COUNT_1_BIT, texture.format, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, texture.image, texture.imageMemory);
 
 
-    PGC::L3::BufferWrapper::transitionImageLayout(context, texture.image, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, texture.mipLevels);
+    PGC::L3::BufferWrapper::transitionImageLayout(context, texture.image, texture.format, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, texture.mipLevels);
     PGC::L3::BufferWrapper::copyBufferToImage(context, stagingBuffer, texture.image, static_cast<uint32_t>(texWidth), static_cast<uint32_t>(texHeight));
 
     vkDestroyBuffer(context->device, stagingBuffer, nullptr);
     vkFreeMemory(context->device, stagingBufferMemory, nullptr);
 
-    generateMipmaps(texture.image, VK_FORMAT_R8G8B8A8_SRGB, texWidth, texHeight, texture.mipLevels);
+    generateMipmaps(texture.image, texture.format, texWidth, texHeight, texture.mipLevels);
 }
 
 void prism::PGC::L2::TextureLoader::createTextureImageView(PGC::Texture& texture)
 {
-    texture.imageView = PGC::L3::ResourcesCreater::createImageView(context->device, texture.image, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT, texture.mipLevels);
+    texture.imageView = PGC::L3::ResourcesCreater::createImageView(context->device, texture.image, texture.format, VK_IMAGE_ASPECT_COLOR_BIT, texture.mipLevels);
 }
 
 void prism::PGC::L2::TextureLoader::createTextureSampler(PGC::Texture& texture)

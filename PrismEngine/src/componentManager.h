@@ -140,14 +140,38 @@ namespace prism {
             /// @param entityId Идентификатор сущности
             void removeAllComponents(Entity entityId);
 
-            /// @brief Регистрирует внешний пул данных
+            /// @brief Регистрирует пул данных для типа хендла
             /// @tparam Handle Тип хендла: DataHandle<DataType, TagType>
-            /// @param pool Указатель на пул (владение остаётся у вызывающего)
+            /// @details Создаёт и владеет пулом автоматически.
+            ///          Повторная регистрация того же TagType игнорируется.
             template<typename Handle>
-            void registerDataPool(DataPool<Handle>* pool) {
-                if (!pool) return;
+            void registerDataPool() {
                 using Tag = typename Handle::TagType;
-                dataPools[std::type_index(typeid(Tag))] = RegisteredPool::make(pool);
+                auto typeIdx = std::type_index(typeid(Tag));
+
+                if (dataPools.find(typeIdx) != dataPools.end()) {
+                    return;
+                }
+
+                auto* pool = new DataPool<Handle>();
+
+                dataPools.try_emplace(typeIdx, RegisteredPool::make(pool));
+            }
+
+            template<typename Handle>
+            Handle addDataToPool(const typename Handle::DataType* data, uint16_t size) {
+                if (DataPool<Handle>* pool = getPool<Handle>()) {
+                    return pool->add(data, size);
+                }
+                return Handle::invalid();
+            }
+
+            template<typename Handle, std::size_t N>
+            Handle addDataToPool(const std::array<typename Handle::DataType, N>& data) {
+                if (DataPool<Handle>* pool = getPool<Handle>()) {
+                    return pool->add(data);
+                }
+                return Handle::invalid();
             }
 
             /// @brief Получает данные из зарегистрированного пула
@@ -157,16 +181,12 @@ namespace prism {
             template<typename Handle>
             const typename Handle::DataType* getDataFromPool(Handle handle, uint16_t& outSize) const {
                 outSize = 0;
-                if (!handle.isValid()) return nullptr;
+                return getPool<Handle>()->get(handle, outSize);
+            }
 
-                using Tag = typename Handle::TagType;
-                auto it = dataPools.find(std::type_index(typeid(Tag)));
-                if (it == dataPools.end()) return nullptr;
-
-                if (auto* pool = it->second.get<Handle>()) {
-                    return pool->get(handle, outSize);
-                }
-                return nullptr;
+            template<typename Handle>
+            void clearDataPool() { 
+                getPool<Handle>()->cleanup();
             }
 
         private:
@@ -264,27 +284,22 @@ namespace prism {
             }
 
             template<typename Handle>
-            void notifyPoolAdded(Handle handle) {
-                if (!handle.isValid()) return;
+            DataPool<Handle>* getPool() {
+                static_assert(is_data_handle<Handle>::value,"Handle must be DataHandle<DataType, TagType>");
+
                 using Tag = typename Handle::TagType;
                 auto it = dataPools.find(std::type_index(typeid(Tag)));
-                if (it != dataPools.end()) {
-                    if (auto* pool = it->second.get<Handle>()) {
-                        pool->addRef(handle);
-                    }
-                }
+                if (it == dataPools.end()) return nullptr;
+                return it->second.get<Handle>();
             }
 
             template<typename Handle>
-            void notifyPoolRemoved(Handle handle) {
-                if (!handle.isValid()) return;
+            const DataPool<Handle>* getPool() const {
+                static_assert(is_data_handle<Handle>::value, "Handle must be DataHandle<DataType, TagType>");
                 using Tag = typename Handle::TagType;
                 auto it = dataPools.find(std::type_index(typeid(Tag)));
-                if (it != dataPools.end()) {
-                    if (auto* pool = it->second.get<Handle>()) {
-                        pool->remove(handle);
-                    }
-                }
+                if (it == dataPools.end()) return nullptr;
+                return it->second.template get<Handle>();
             }
 
             // Карта "тип -> хранилище"

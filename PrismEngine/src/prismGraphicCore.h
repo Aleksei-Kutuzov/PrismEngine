@@ -56,7 +56,8 @@ namespace prism {
             PGC::utils::Context context;
 
             PGC::L1::TextureStorage textureStorage;
-            PGC::L1::MeshManager meshManager;
+            PGC::L1::MeshStorage meshManager;
+            PGC::L1::PipelineStorage pipelineStorage;
 
         private:
             void createInstance();
@@ -90,7 +91,6 @@ namespace prism {
             PGC::L1::PhysicalDevice physicalDevice;
             PGC::L1::LogicalDevice logicalDevice;
             PGC::L1::SwapChain swapChain;
-            PGC::L1::PipelineStorage pipelineStorage;
             PGC::L1::RenderPass renderPass;
 
             VkSampleCountFlagBits getMaxUsableSampleCount();

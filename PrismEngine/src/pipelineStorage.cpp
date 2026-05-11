@@ -3,10 +3,10 @@
 
 void prism::PGC::L1::PipelineStorage::createImpl() {
     shaderStagesLoader = new PGC::L2::ShaderStagesLoader(context, settings);
-    createPipeline(&context->graphicsPipeline, settings->defaultPipeline);
+    context->defaultGraphicsPipelineIndex = add(settings->defaultPipeline);
 }
 
-size_t prism::PGC::L1::PipelineStorage::add(utils::PipelineSettings pipelineSettings) {
+prism::PipelineIndex prism::PGC::L1::PipelineStorage::add(utils::PipelineSettings pipelineSettings) {
     size_t pipelineSettingsHash = pipelineSettings.getHash();
     if (pipelines.count(pipelineSettingsHash)) { return pipelineSettingsHash; }
     pipelines[pipelineSettingsHash] = VkPipeline{};
@@ -15,7 +15,7 @@ size_t prism::PGC::L1::PipelineStorage::add(utils::PipelineSettings pipelineSett
     return pipelineSettingsHash;
 }
 
-VkPipeline prism::PGC::L1::PipelineStorage::get(size_t index)
+VkPipeline prism::PGC::L1::PipelineStorage::get(PipelineIndex index)
 {
     return pipelines[index];
 }

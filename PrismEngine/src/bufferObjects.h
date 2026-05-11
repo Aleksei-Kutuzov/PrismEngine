@@ -3,6 +3,7 @@
 #include <vulkan/vulkan_core.h>
 #include "materialComponent.h"
 #include "lightsComponent.h"
+#include "material.h"
 
 
 namespace prism {
@@ -10,7 +11,7 @@ namespace prism {
 		struct ObjectSSBO {
 			alignas(16) glm::mat4 model;
 			alignas(16) glm::mat4 normals;
-			alignas(4) uint32_t texture;
+			prism::renderer::Material material;
 		};
 
 		struct CameraUBO {

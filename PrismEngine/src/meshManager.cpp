@@ -2,12 +2,12 @@
 #include "meshLoader.h"
 #include "bufferWrapper.h"
 
-void prism::PGC::L1::MeshManager::createImpl()
+void prism::PGC::L1::MeshStorage::createImpl()
 {
     meshLoader = new PGC::L2::MeshLoader(context, settings);
 }
 
-prism::PGC::MeshIds prism::PGC::L1::MeshManager::addMesh(std::string texturePath)
+prism::PGC::MeshIds prism::PGC::L1::MeshStorage::load(std::string texturePath)
 {
     prism::PGC::MeshData mesh = meshLoader->load(texturePath);
 
@@ -41,7 +41,7 @@ prism::PGC::MeshIds prism::PGC::L1::MeshManager::addMesh(std::string texturePath
     return meshIds;
 }
 
-void prism::PGC::L1::MeshManager::update()
+void prism::PGC::L1::MeshStorage::update()
 {
     if (!context->meshBuffersDirty) return;
 
@@ -76,7 +76,7 @@ void prism::PGC::L1::MeshManager::update()
     context->meshBuffersDirty = false;
 }
 
-void prism::PGC::L1::MeshManager::clear()
+void prism::PGC::L1::MeshStorage::clear()
 {
     context->mesh.clear();
     context->allVertices.clear();
@@ -86,13 +86,13 @@ void prism::PGC::L1::MeshManager::clear()
     context->meshBuffersDirty = true;
 }
 
-void prism::PGC::L1::MeshManager::cleanupImpl()
+void prism::PGC::L1::MeshStorage::cleanupImpl()
 {
     clear();
     delete meshLoader;
 }
 
-prism::PGC::SubMesh& prism::PGC::L1::MeshManager::getSubMeshInfo(uint32_t id)
+prism::PGC::SubMesh& prism::PGC::L1::MeshStorage::getSubMeshInfo(uint32_t id)
 {
     static prism::PGC::SubMesh emptyInfo = { 0, 0, 0, 0 };
 
@@ -103,7 +103,7 @@ prism::PGC::SubMesh& prism::PGC::L1::MeshManager::getSubMeshInfo(uint32_t id)
     return emptyInfo;
 }
 
-uint32_t prism::PGC::L1::MeshManager::getNextAvailableIndex()
+uint32_t prism::PGC::L1::MeshStorage::getNextAvailableIndex()
 {
     if (!context->freeMeshIndices.empty()) {
         uint32_t index = context->freeMeshIndices.back();
