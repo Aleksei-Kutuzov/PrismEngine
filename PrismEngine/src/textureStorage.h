@@ -1,24 +1,16 @@
 #pragma once
-#include "utils.h"
-#include "layersMacroses.h"
-#include "pgcLayersObjsTemplate.h"
+#include "pgcResourceStorage.h"
 #include "textureLoader.h"
+#include <unordered_map>
 
 DECLARE_PGC_LAYER_INSTANCE(L1)
-class TextureStorage : public L1_Object<TextureStorage> {
+class TextureStorage : public Storage<TextureId, Texture, PGC::L2::TextureLoader, TextureStorage> {
 public:
 	void createImpl();
-	TextureId load(std::string texturePath);
-	std::shared_ptr<PGC::Texture> get(TextureId textureId);
-	bool remove(TextureId textureId);
+	TextureId loadImpl(Texture textureData);
+	void unloadImpl(TextureId id);
+	void updateImpl();
+	void clearImpl();
 	void cleanupImpl();
-
-private:
-	void updateDescriptors();
-	uint32_t getNextAvailableIndex(utils::Context* context);
-
-	std::vector<PGC::Texture> textures;
-	std::vector<uint32_t> freeTextureIndices;
-	PGC::L2::TextureLoader* textureLoader;
 };
 END_NAMESPACE_DECLARATION

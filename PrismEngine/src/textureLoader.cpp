@@ -4,14 +4,15 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 #include <stdexcept>
+#include "pathes.h"
 
-prism::PGC::Texture prism::PGC::L2::TextureLoader::load(std::string texturePath)
+prism::PGC::Texture prism::PGC::L2::TextureLoader::load(std::filesystem::path texturePath)
 {
 	PGC::Texture texture;
-	texture.path = texturePath;
-	createTextureImage(&texture);
-	createTextureImageView(&texture);
-	createTextureSampler(&texture);
+	texture.path = basePath / texturesDir / texturePath;
+	createTextureImage(texture);
+	createTextureImageView(texture);
+	createTextureSampler(texture);
     return texture;
 }
 
@@ -31,19 +32,19 @@ void prism::PGC::L2::TextureLoader::cleanup(PGC::Texture* texture)
 }
 
 
-void prism::PGC::L2::TextureLoader::createTextureImage(PGC::Texture* texture)
+void prism::PGC::L2::TextureLoader::createTextureImage(PGC::Texture& texture)
 {
     int texWidth, texHeight, texChannels;
-    stbi_uc* pixels = stbi_load(texture->path.c_str(), &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
+    stbi_uc* pixels = stbi_load(texture.path.generic_string().c_str(), &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
     VkDeviceSize imageSize = texWidth * texHeight * 4;
-    texture->mipLevels = static_cast<uint32_t>(std::floor(std::log2(std::max(texWidth, texHeight)))) + 1;
+    texture.mipLevels = static_cast<uint32_t>(std::floor(std::log2(std::max(texWidth, texHeight)))) + 1;
     if (!pixels) {
         throw std::runtime_error("failed to load texture image!");
     }
 
-    texture->width = texWidth;
-    texture->height = texHeight;
-    texture->channels = texChannels;
+    texture.width = texWidth;
+    texture.height = texHeight;
+    texture.channels = texChannels;
 
     VkBuffer stagingBuffer;
     VkDeviceMemory stagingBufferMemory;
@@ -56,26 +57,26 @@ void prism::PGC::L2::TextureLoader::createTextureImage(PGC::Texture* texture)
 
     stbi_image_free(pixels);
 
-    PGC::L3::ResourcesCreater::createImage(context, texWidth, texHeight, texture->mipLevels, VK_SAMPLE_COUNT_1_BIT, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, texture->image, texture->imageMemory);
+    PGC::L3::ResourcesCreater::createImage(context, texWidth, texHeight, texture.mipLevels, VK_SAMPLE_COUNT_1_BIT, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, texture.image, texture.imageMemory);
 
 
-    PGC::L3::BufferWrapper::transitionImageLayout(context, texture->image, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, texture->mipLevels);
-    PGC::L3::BufferWrapper::copyBufferToImage(context, stagingBuffer, texture->image, static_cast<uint32_t>(texWidth), static_cast<uint32_t>(texHeight));
+    PGC::L3::BufferWrapper::transitionImageLayout(context, texture.image, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, texture.mipLevels);
+    PGC::L3::BufferWrapper::copyBufferToImage(context, stagingBuffer, texture.image, static_cast<uint32_t>(texWidth), static_cast<uint32_t>(texHeight));
 
     vkDestroyBuffer(context->device, stagingBuffer, nullptr);
     vkFreeMemory(context->device, stagingBufferMemory, nullptr);
 
-    generateMipmaps(texture->image, VK_FORMAT_R8G8B8A8_SRGB, texWidth, texHeight, texture->mipLevels);
+    generateMipmaps(texture.image, VK_FORMAT_R8G8B8A8_SRGB, texWidth, texHeight, texture.mipLevels);
 }
 
-void prism::PGC::L2::TextureLoader::createTextureImageView(PGC::Texture* texture)
+void prism::PGC::L2::TextureLoader::createTextureImageView(PGC::Texture& texture)
 {
-    texture->imageView = PGC::L3::ResourcesCreater::createImageView(context->device, texture->image, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT, texture->mipLevels);
+    texture.imageView = PGC::L3::ResourcesCreater::createImageView(context->device, texture.image, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT, texture.mipLevels);
 }
 
-void prism::PGC::L2::TextureLoader::createTextureSampler(PGC::Texture* texture)
+void prism::PGC::L2::TextureLoader::createTextureSampler(PGC::Texture& texture)
 {
-    PGC::L3::ResourcesCreater::createTextureSampler(context, &texture->sampler);
+    PGC::L3::ResourcesCreater::createTextureSampler(context, &texture.sampler);
 }
 
 void prism::PGC::L2::TextureLoader::generateMipmaps(VkImage image, VkFormat imageFormat, int32_t texWidth, int32_t texHeight, uint32_t mipLevels)

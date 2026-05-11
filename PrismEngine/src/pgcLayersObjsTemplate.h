@@ -34,7 +34,6 @@ protected:
 	PGC::utils::Context* context;
 	PGC::utils::Settings* settings;
 
-private:
 	Derived& derived() {
 		return *static_cast<Derived*>(this);
 	}

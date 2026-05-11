@@ -6,10 +6,10 @@
 void prism::init() {
 	SDL_Init(SDL_INIT_EVERYTHING);
 
-	char* basePath = SDL_GetBasePath();
-	if (basePath) {
-		rootPath = std::filesystem::path(basePath);
-		SDL_free(basePath);
+	char* sdlBasePath = SDL_GetBasePath();
+	if (sdlBasePath) {
+		basePath = std::filesystem::path(sdlBasePath);
+		SDL_free(sdlBasePath);
 	}
 	else {
 		logger::logError(logger::Error::ERROR_GETTING_BASE_PATH, SDL_GetError());

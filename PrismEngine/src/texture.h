@@ -1,4 +1,7 @@
 #pragma once
+#include <filesystem>
+#include "vulkan/vulkan.h"
+
 
 namespace prism {
 	typedef uint32_t TextureId;
@@ -7,7 +10,7 @@ namespace prism {
 	namespace PGC {
 		struct Texture
 		{
-			std::string path;
+			std::filesystem::path path;
 			uint32_t mipLevels = 1;
 
 			VkImage image;

@@ -2,58 +2,57 @@
 #include "utils.h"
 #include "layersMacroses.h"
 #include "pgcLayersObjsTemplate.h"
-#include "pathes.h"
+#include <unordered_map>
 
 DECLARE_PGC_LAYER_INSTANCE(L1)
 template<typename DataId, typename Data, typename Loader, typename Derived>
 class Storage : public L1_Object<Derived> {
 public:
 	void createImpl() {
-		loader = new Loader(context, settings);
-		derived().createImpl();
+		this->loader = new Loader(this->context, this->settings);
 	};
 	
 	DataId load(std::filesystem::path path) {
-		auto it = pathToId.find(path);
-		if (it != pathToId.end()) return it->second;
+		auto it = this->pathToId.find(path);
+		if (it != this->pathToId.end()) return it->second;
 
-		needUpdate = true;
-		return derived().loadImpl(loader->load(path, prism::rootPath));
+		this->needUpdate = true;
+		return this->derived().loadImpl(this->loader->load(path));
 	};
-	void unload(DataId id) { derived().unloadImpl(id); };
+	void unload(DataId id) { this->derived().unloadImpl(id); };
 	
-	Data& get(DataId id) { return data[id]; };
+	Data& get(DataId id) { return this->data[id]; };
 	
-	void update() { if (needUpdate) { derived().updateImpl(); needUpdate = false; } };
-	void clear() { derived().clearImpl(); };
+	void update() { if (this->needUpdate) { this->derived().updateImpl(); this->needUpdate = false; } };
+	void clear() { 
+		this->derived().clearImpl();
+		this->data.clear();
+		this->pathToId.clear();
+		this->freeIndices.clear();
+	};
 	
-	void cleanupImpl() {
-		derived().cleanupImpl();
-		
+	void cleanupImpl() {		
+		this->clear();
 
-		data.clear();
-		pathToId.clear();
-		freeIndices.clear();
-
-		if (loader) {
-			delete loader;
-			loader = nullptr;
+		if (this->loader) {
+			delete this->loader;
+			this->loader = nullptr;
 		}
 	};
 
 protected:
 	uint32_t getNextAvailableIndex() {
-		if (!freeIndices.empty()) {
-			uint32_t index = freeIndices.back();
-			freeIndices.pop_back();
+		if (!this->freeIndices.empty()) {
+			uint32_t index = this->freeIndices.back();
+			this->freeIndices.pop_back();
 			return index;
 		}
 
-		return static_cast<uint32_t>(data.size());
+		return static_cast<uint32_t>(this->data.size());
 	};
 
-	std::unordered_map<std::filesystem::path, DataId> pathToId;
 	std::vector<Data> data;
+	std::unordered_map<std::filesystem::path, DataId> pathToId;
 	std::vector<uint32_t> freeIndices;
 	Loader* loader = nullptr;
 	bool needUpdate = false;

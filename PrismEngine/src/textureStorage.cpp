@@ -1,85 +1,69 @@
-#include "memory"
+#include <memory>
 #include "textureStorage.h"
 #include "textureLoader.h"
 
+using BaseStorage = prism::PGC::L1::Storage < prism::TextureId, prism::PGC::Texture, prism::PGC::L2::TextureLoader, prism::PGC::L1::TextureStorage> ;
+
 void prism::PGC::L1::TextureStorage::createImpl() {
-    textureLoader = new PGC::L2::TextureLoader(context, settings);
-    textures.push_back(PGC::Texture{});
+    BaseStorage::createImpl();
+    data.push_back(PGC::Texture{});
 }
 
-prism::TextureId prism::PGC::L1::TextureStorage::load(std::string texturePath) {
-    Texture texture = textureLoader->load(texturePath);
-
-    if (texture.image == VK_NULL_HANDLE) {
+prism::TextureId prism::PGC::L1::TextureStorage::loadImpl(Texture textureData) {
+    if (textureData.image == VK_NULL_HANDLE) {
         return INVALID_TEXTURE_ID;
     }
 
-    uint32_t index = getNextAvailableIndex(context);
-    texture.bindlessIndex = index;
-
-    if (index >= textures.size()) {
-        textures.push_back(texture);
+    uint32_t index = getNextAvailableIndex();
+    textureData.bindlessIndex = index;
+    pathToId.emplace(textureData.path, index);
+    if (index >= data.size()) {
+        data.push_back(textureData);
     }
     else {
-        textures[index] = texture;
+        data[index] = textureData;
     }
-
-    updateDescriptors();
 
     return index;
 }
 
-std::shared_ptr<prism::PGC::Texture> prism::PGC::L1::TextureStorage::get(TextureId textureId)
+void prism::PGC::L1::TextureStorage::unloadImpl(TextureId id)
 {
-    return std::make_shared<prism::PGC::Texture>(textures[textureId]);
-}
-
-bool prism::PGC::L1::TextureStorage::remove(TextureId textureId)
-{
-    if (textureId == INVALID_TEXTURE_ID || textureId >= textures.size()) {
-        return false;
+    if (id == INVALID_TEXTURE_ID || id >= data.size()) {
+        return ;
+    }
+    auto& tex = data[id];
+    if (tex.image != VK_NULL_HANDLE) {
+        pathToId.erase(tex.path);
+        loader->cleanup(&tex);
     }
 
-    textureLoader->cleanup(&textures[textureId]);
-
-    freeTextureIndices.push_back(textureId);
-
-    updateDescriptors();
+    freeIndices.push_back(id);
 }
 
 void prism::PGC::L1::TextureStorage::cleanupImpl()
 {
-    for (uint32_t i = INVALID_TEXTURE_ID + 1; i < textures.size(); i++) {
-        auto& texture = textures[i];
-        if (texture.image != VK_NULL_HANDLE) {
-            textureLoader->cleanup(&texture);
-        }
+    
+    if (this->context->textureDescriptorSetLayout != VK_NULL_HANDLE) {
+        vkDestroyDescriptorSetLayout(this->context->device, this->context->textureDescriptorSetLayout, nullptr);
+        this->context->textureDescriptorSetLayout = VK_NULL_HANDLE;
     }
 
-    textures.clear();
-    freeTextureIndices.clear();
-
-    if (context->textureDescriptorSetLayout != VK_NULL_HANDLE) {
-        vkDestroyDescriptorSetLayout(context->device, context->textureDescriptorSetLayout, nullptr);
-        context->textureDescriptorSetLayout = VK_NULL_HANDLE;
-    }
-
-    delete textureLoader;
 }
 
-void prism::PGC::L1::TextureStorage::updateDescriptors()
+void prism::PGC::L1::TextureStorage::updateImpl()
 {
-    if (context->textureDescriptorSet == VK_NULL_HANDLE) {
+    if (this->context->textureDescriptorSet == VK_NULL_HANDLE) {
         return;
     }
 
     std::vector<std::pair<uint32_t, VkDescriptorImageInfo>> validTextures;
-    for (uint32_t i = INVALID_TEXTURE_ID + 1; i < textures.size(); i++) {
-        if (textures[i].image != VK_NULL_HANDLE) {
+    for (uint32_t i = INVALID_TEXTURE_ID + 1; i < data.size(); i++) {
+        if (data[i].image != VK_NULL_HANDLE) {
             VkDescriptorImageInfo imageInfo{};
             imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-            imageInfo.imageView = textures[i].imageView;
-            imageInfo.sampler = textures[i].sampler;
+            imageInfo.imageView = data[i].imageView;
+            imageInfo.sampler = data[i].sampler;
             validTextures.emplace_back(i, imageInfo);
         }
     }
@@ -94,7 +78,7 @@ void prism::PGC::L1::TextureStorage::updateDescriptors()
     for (const auto& [index, imageInfo] : validTextures) {
         VkWriteDescriptorSet descriptorWrite{};
         descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-        descriptorWrite.dstSet = context->textureDescriptorSet;
+        descriptorWrite.dstSet = this->context->textureDescriptorSet;
         descriptorWrite.dstBinding = 0;
         descriptorWrite.dstArrayElement = index;
         descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
@@ -105,17 +89,18 @@ void prism::PGC::L1::TextureStorage::updateDescriptors()
     }
 
 
-    vkUpdateDescriptorSets(context->device,
+    vkUpdateDescriptorSets(this->context->device,
         static_cast<uint32_t>(descriptorWrites.size()),
         descriptorWrites.data(), 0, nullptr);
 }
 
-uint32_t prism::PGC::L1::TextureStorage::getNextAvailableIndex(utils::Context* context) {
-    if (!freeTextureIndices.empty()) {
-        uint32_t index = freeTextureIndices.back();
-        freeTextureIndices.pop_back();
-        return index >= INVALID_TEXTURE_ID + 1 ? index : getNextAvailableIndex(context);
+void prism::PGC::L1::TextureStorage::clearImpl()
+{
+    BaseStorage::cleanupImpl();
+    for (uint32_t i = INVALID_TEXTURE_ID + 1; i < data.size(); i++) {
+        auto& texture = data[i];
+        if (texture.image != VK_NULL_HANDLE) {
+            loader->cleanup(&texture);
+        }
     }
-
-    return static_cast<uint32_t>(textures.size() > 0 ? textures.size() : INVALID_TEXTURE_ID + 1);
 }
