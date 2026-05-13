@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1777405135156,
+  "lastUpdate": 1778707536851,
   "repoUrl": "https://github.com/ThePrismEngine/PrismEngine",
   "entries": {
     "ECS Benchmarks": [
@@ -1224,6 +1224,210 @@ window.BENCHMARK_DATA = {
             "value": 13.569322037636933,
             "unit": "ns/iter",
             "extra": "iterations: 49777778\ncpu: 13.497488779029068 ns\nthreads: 1"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "alekseikutuzov2@yandex.com",
+            "name": "Aleksei-Kutuzov",
+            "username": "Aleksei-Kutuzov"
+          },
+          "committer": {
+            "email": "alekseikutuzov2@yandex.com",
+            "name": "Aleksei-Kutuzov",
+            "username": "Aleksei-Kutuzov"
+          },
+          "distinct": true,
+          "id": "9f619422b74f5cd625830e004c77239e015a1f5f",
+          "message": "add: new heght map\nadd: new color set material metod and new res pseudo pathes",
+          "timestamp": "2026-05-14T00:23:49+03:00",
+          "tree_id": "d4d9d08f56393430110accb075f96800dd03a939",
+          "url": "https://github.com/ThePrismEngine/PrismEngine/commit/9f619422b74f5cd625830e004c77239e015a1f5f"
+        },
+        "date": 1778707532365,
+        "tool": "googlecpp",
+        "benches": [
+          {
+            "name": "ECSBenchmark/CreateEntity",
+            "value": 2.41438727409142,
+            "unit": "ns/iter",
+            "extra": "iterations: 298666667\ncpu: 2.4065290151712846 ns\nthreads: 1"
+          },
+          {
+            "name": "ECSBenchmark/DestroyEntity",
+            "value": 182.37674302930887,
+            "unit": "ns/iter",
+            "extra": "iterations: 2986667\ncpu: 204.0317852643097 ns\nthreads: 1"
+          },
+          {
+            "name": "ECSBenchmark/AddComponent",
+            "value": 219.3837245888291,
+            "unit": "ns/iter",
+            "extra": "iterations: 3446154\ncpu: 244.8381587125822 ns\nthreads: 1"
+          },
+          {
+            "name": "ECSBenchmark/RemoveComponent",
+            "value": 213.93400536654596,
+            "unit": "ns/iter",
+            "extra": "iterations: 4072727\ncpu: 226.35325176472668 ns\nthreads: 1"
+          },
+          {
+            "name": "ECSBenchmark/GetComponent",
+            "value": 15.474689732139423,
+            "unit": "ns/iter",
+            "extra": "iterations: 44800000\ncpu: 15.345982142857142 ns\nthreads: 1"
+          },
+          {
+            "name": "ECSBenchmark/GetEntitiesWith_SingleComponent/64",
+            "value": 18.117018911759413,
+            "unit": "ns/iter",
+            "extra": "iterations: 37333333\ncpu: 17.99665194639868 ns\nthreads: 1"
+          },
+          {
+            "name": "ECSBenchmark/GetEntitiesWith_SingleComponent/128",
+            "value": 18.145494804871085,
+            "unit": "ns/iter",
+            "extra": "iterations: 37333333\ncpu: 17.99665194639868 ns\nthreads: 1"
+          },
+          {
+            "name": "ECSBenchmark/GetEntitiesWith_SingleComponent/256",
+            "value": 18.27195746693036,
+            "unit": "ns/iter",
+            "extra": "iterations: 40727273\ncpu: 18.415178448112645 ns\nthreads: 1"
+          },
+          {
+            "name": "ECSBenchmark/GetEntitiesWith_SingleComponent/512",
+            "value": 18.14593437499923,
+            "unit": "ns/iter",
+            "extra": "iterations: 32000000\ncpu: 18.06640625 ns\nthreads: 1"
+          },
+          {
+            "name": "ECSBenchmark/GetEntitiesWith_SingleComponent/1024",
+            "value": 18.159872869464067,
+            "unit": "ns/iter",
+            "extra": "iterations: 40727273\ncpu: 18.0315288971103 ns\nthreads: 1"
+          },
+          {
+            "name": "ECSBenchmark/GetEntitiesWith_SingleComponent/2048",
+            "value": 18.08122248287105,
+            "unit": "ns/iter",
+            "extra": "iterations: 37333333\ncpu: 17.99665194639868 ns\nthreads: 1"
+          },
+          {
+            "name": "ECSBenchmark/GetEntitiesWith_SingleComponent/4096",
+            "value": 18.237503895734633,
+            "unit": "ns/iter",
+            "extra": "iterations: 40727273\ncpu: 17.64787934610795 ns\nthreads: 1"
+          },
+          {
+            "name": "ECSBenchmark/GetEntitiesWith_SingleComponent/8192",
+            "value": 18.097636932379125,
+            "unit": "ns/iter",
+            "extra": "iterations: 40727273\ncpu: 18.0315288971103 ns\nthreads: 1"
+          },
+          {
+            "name": "ECSBenchmark/GetEntitiesWithAll_TwoComponents/64",
+            "value": 2634.734999999669,
+            "unit": "ns/iter",
+            "extra": "iterations: 280000\ncpu: 2511.160714285714 ns\nthreads: 1"
+          },
+          {
+            "name": "ECSBenchmark/GetEntitiesWithAll_TwoComponents/128",
+            "value": 5263.958999998977,
+            "unit": "ns/iter",
+            "extra": "iterations: 100000\ncpu: 5312.5 ns\nthreads: 1"
+          },
+          {
+            "name": "ECSBenchmark/GetEntitiesWithAll_TwoComponents/256",
+            "value": 10448.986834881634,
+            "unit": "ns/iter",
+            "extra": "iterations: 74667\ncpu: 10463.12293248691 ns\nthreads: 1"
+          },
+          {
+            "name": "ECSBenchmark/GetEntitiesWithAll_TwoComponents/512",
+            "value": 20904.493750002475,
+            "unit": "ns/iter",
+            "extra": "iterations: 32000\ncpu: 20507.8125 ns\nthreads: 1"
+          },
+          {
+            "name": "ECSBenchmark/GetEntitiesWithAll_TwoComponents/1024",
+            "value": 42066.525448324304,
+            "unit": "ns/iter",
+            "extra": "iterations: 17231\ncpu: 41712.61099181708 ns\nthreads: 1"
+          },
+          {
+            "name": "ECSBenchmark/GetEntitiesWithAll_TwoComponents/2048",
+            "value": 92816.32516407093,
+            "unit": "ns/iter",
+            "extra": "iterations: 7467\ncpu: 92071.78250970939 ns\nthreads: 1"
+          },
+          {
+            "name": "ECSBenchmark/GetEntitiesWithAll_TwoComponents/4096",
+            "value": 199851.8862449474,
+            "unit": "ns/iter",
+            "extra": "iterations: 3446\ncpu: 199506.67440510736 ns\nthreads: 1"
+          },
+          {
+            "name": "ECSBenchmark/GetEntitiesWithAll_TwoComponents/8192",
+            "value": 437536.62500009226,
+            "unit": "ns/iter",
+            "extra": "iterations: 1600\ncpu: 419921.875 ns\nthreads: 1"
+          },
+          {
+            "name": "ECSBenchmark/RegisterSystem",
+            "value": 67.7088124999971,
+            "unit": "ns/iter",
+            "extra": "iterations: 11200000\ncpu: 66.96428571428571 ns\nthreads: 1"
+          },
+          {
+            "name": "ECSBenchmark/UpdateSystems/1",
+            "value": 2.9613873850876007,
+            "unit": "ns/iter",
+            "extra": "iterations: 298666667\ncpu: 2.5111607114830794 ns\nthreads: 1"
+          },
+          {
+            "name": "ECSBenchmark/UpdateSystems/2",
+            "value": 5.837902000000668,
+            "unit": "ns/iter",
+            "extra": "iterations: 100000000\ncpu: 5.3125 ns\nthreads: 1"
+          },
+          {
+            "name": "ECSBenchmark/UpdateSystems/4",
+            "value": 9.373671874998633,
+            "unit": "ns/iter",
+            "extra": "iterations: 89600000\ncpu: 7.498604910714286 ns\nthreads: 1"
+          },
+          {
+            "name": "ECSBenchmark/UpdateSystems/8",
+            "value": 16.03036399093655,
+            "unit": "ns/iter",
+            "extra": "iterations: 49777778\ncpu: 14.753069130566656 ns\nthreads: 1"
+          },
+          {
+            "name": "ECSBenchmark/UpdateSystems/16",
+            "value": 25.067338280948785,
+            "unit": "ns/iter",
+            "extra": "iterations: 24888889\ncpu: 24.483816854982962 ns\nthreads: 1"
+          },
+          {
+            "name": "ECSBenchmark/UpdateSystems/32",
+            "value": 48.39099275631524,
+            "unit": "ns/iter",
+            "extra": "iterations: 14451613\ncpu: 47.572544324290995 ns\nthreads: 1"
+          },
+          {
+            "name": "ECSBenchmark/SetResource",
+            "value": 18.200757020978017,
+            "unit": "ns/iter",
+            "extra": "iterations: 40727273\ncpu: 18.0315288971103 ns\nthreads: 1"
+          },
+          {
+            "name": "ECSBenchmark/GetResource",
+            "value": 13.195944642855498,
+            "unit": "ns/iter",
+            "extra": "iterations: 56000000\ncpu: 13.392857142857142 ns\nthreads: 1"
           }
         ]
       }
