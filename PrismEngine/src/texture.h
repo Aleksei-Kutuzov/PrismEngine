@@ -11,7 +11,7 @@ namespace prism {
 		enum class TextureType : uint8_t {
 			ALBEDO,   // RGBA
 			NORMAL,   // RGBA UNORM
-			MRAO,     // RGBA UNORM (R=Metallic, G=Roughness, B=AO)
+			MRAOH,     // RGBA UNORM (R=Metallic, G=Roughness, B=AO, A=Height)
 			EMISSION  // RGBA UNORM
 		};
 

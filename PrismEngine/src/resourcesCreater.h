@@ -12,7 +12,7 @@ public:
 	static void createFramebuffers(utils::Context* context, utils::Settings* settings);
 	static void createColorResources(utils::Context* context, utils::Settings* settings);
     static void createDepthResources(utils::Context* context, utils::Settings* settings);
-	static void createTextureSampler(utils::Context* context, VkSampler* textureSampler);
+	static void createTextureSampler(utils::Context* context, VkSampler* textureSampler, bool isSinglePixel = false);
 	static void createCommandPool(utils::Context* context);
 };
 END_NAMESPACE_DECLARATION

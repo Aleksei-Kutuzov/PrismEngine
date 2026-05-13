@@ -8,10 +8,12 @@ DECLARE_PGC_LAYER_INSTANCE(L2)
 class TextureLoader {
 public:
 	TextureLoader(utils::Context* context, utils::Settings* settings) : context(context), settings(settings) {};
-	prism::PGC::Texture load(std::filesystem::path texturePath, TextureType type = TextureType::ALBEDO);
+	prism::PGC::Texture load(std::filesystem::path path, TextureType type = TextureType::ALBEDO);
+	prism::PGC::Texture loadTexture(std::filesystem::path texturePath, TextureType type = TextureType::ALBEDO);
+	PGC::Texture loadColor(const std::array<unsigned char, 4>& rgba, TextureType type = TextureType::ALBEDO);
 	void cleanup(PGC::Texture* texture);
 private:
-	void createTextureImage(PGC::Texture& texture);
+	void createTextureImageFromData(PGC::Texture& texture, const void* pixelData, VkDeviceSize dataSize);
 	void createTextureImageView(PGC::Texture& texture);
 	void createTextureSampler(PGC::Texture& texture);
 	void generateMipmaps(VkImage image, VkFormat imageFormat, int32_t texWidth, int32_t texHeight, uint32_t mipLevels);

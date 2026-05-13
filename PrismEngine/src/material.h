@@ -10,10 +10,13 @@ namespace prism {
 			alignas(4) prism::TextureId roughness = INVALID_TEXTURE_ID;
 			alignas(4) prism::TextureId ambient = INVALID_TEXTURE_ID;
 			alignas(4) prism::TextureId emission = INVALID_TEXTURE_ID;
+			alignas(4) prism::TextureId height = INVALID_TEXTURE_ID;
 
-			alignas(4) float metalicScalar = 0.0f;
-			alignas(4) float roughnessScalar = 0.5f;
-			alignas(4) float emissionScalar = 0.0f;
+			alignas(4) float metallicScalar = 1.0f;
+			alignas(4) float roughnessScalar = 1.0f;
+			alignas(4) float ambientScalar = 1.0f;
+			alignas(4) float emissionScalar = 1.0f;
+			alignas(4) float heightScalar = 1.0f;
 		};
 	}
 }

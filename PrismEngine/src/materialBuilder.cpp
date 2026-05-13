@@ -2,6 +2,9 @@
 #include "linker.h"
 #include "textureStorage.h"
 #include "renderer.h"
+#include "resourcesPath.h"
+
+prism::render::MaterialBuilder::MaterialBuilder(prism::scene::Scene& scene, prism::PGC::L1::TextureStorage& storage) : scene(scene), storage(storage) { }
 
 prism::render::MaterialBuilder& prism::render::MaterialBuilder::size(uint16_t size)
 {
@@ -31,7 +34,7 @@ prism::render::MaterialBuilder& prism::render::MaterialBuilder::copyAll(prism::s
         materialsData[i].ambient = storage.get(mats[i].ambient).path;
         materialsData[i].emission = storage.get(mats[i].emission).path;
 
-        materialsData[i].metalicScalar = mats[i].metalicScalar;
+        materialsData[i].metallicScalar = mats[i].metallicScalar;
         materialsData[i].roughnessScalar = mats[i].roughnessScalar;
         materialsData[i].emissionScalar = mats[i].emissionScalar;
     }
@@ -51,7 +54,7 @@ prism::render::MaterialBuilder& prism::render::MaterialBuilder::copy(prism::scen
     materialsData[subMaterialId].ambient = storage.get(mats[subMaterialId].ambient).path;
     materialsData[subMaterialId].emission = storage.get(mats[subMaterialId].emission).path;
 
-    materialsData[subMaterialId].metalicScalar = mats[subMaterialId].metalicScalar;
+    materialsData[subMaterialId].metallicScalar = mats[subMaterialId].metallicScalar;
     materialsData[subMaterialId].roughnessScalar = mats[subMaterialId].roughnessScalar;
     materialsData[subMaterialId].emissionScalar = mats[subMaterialId].emissionScalar;
 
@@ -64,10 +67,20 @@ prism::render::MaterialBuilder& prism::render::MaterialBuilder::albedo(uint16_t 
     return *this;
 }
 
+prism::render::MaterialBuilder& prism::render::MaterialBuilder::albedo(uint16_t subMaterialId, std::array<unsigned char, 4> rgba)
+{
+    return albedo(subMaterialId, prism::PGC::colorToPath(rgba[0], rgba[1], rgba[2], rgba[3]));
+}
+
 prism::render::MaterialBuilder& prism::render::MaterialBuilder::normal(uint16_t subMaterialId, std::filesystem::path filename)
 {
     materialsData[subMaterialId].normal = filename;
     return *this;
+}
+
+prism::render::MaterialBuilder& prism::render::MaterialBuilder::normal(uint16_t subMaterialId, std::array<unsigned char, 4> rgba)
+{
+    return normal(subMaterialId, prism::PGC::colorToPath(rgba[0], rgba[1], rgba[2], rgba[3]));
 }
 
 prism::render::MaterialBuilder& prism::render::MaterialBuilder::mrao(uint16_t subMaterialId, std::filesystem::path filename)
@@ -78,21 +91,37 @@ prism::render::MaterialBuilder& prism::render::MaterialBuilder::mrao(uint16_t su
     return *this;
 }
 
-prism::render::MaterialBuilder& prism::render::MaterialBuilder::metalic(uint16_t subMaterialId, std::filesystem::path filename)
+prism::render::MaterialBuilder& prism::render::MaterialBuilder::mrao(uint16_t subMaterialId, std::array<unsigned char, 4> rgba)
+{
+    return mrao(subMaterialId, prism::PGC::colorToPath(rgba[0], rgba[1], rgba[2], rgba[3]));
+}
+
+prism::render::MaterialBuilder& prism::render::MaterialBuilder::mraoh(uint16_t subMaterialId, std::filesystem::path filename)
+{
+    return mrao(subMaterialId, filename).
+           height(subMaterialId, filename);
+}
+
+prism::render::MaterialBuilder& prism::render::MaterialBuilder::mraoh(uint16_t subMaterialId, std::array<unsigned char, 4> rgba)
+{
+    return mraoh(subMaterialId, prism::PGC::colorToPath(rgba[0], rgba[1], rgba[2], rgba[3]));
+}
+
+prism::render::MaterialBuilder& prism::render::MaterialBuilder::metallic(uint16_t subMaterialId, std::filesystem::path filename)
 {
     materialsData[subMaterialId].metallic = filename;
     return *this;
 }
 
-prism::render::MaterialBuilder& prism::render::MaterialBuilder::metalic(uint16_t subMaterialId, float metalic)
+prism::render::MaterialBuilder& prism::render::MaterialBuilder::metallic(uint16_t subMaterialId, float metallic)
 {
-    materialsData[subMaterialId].metalicScalar = metalic;
+    materialsData[subMaterialId].metallicScalar = metallic;
     return *this;
 }
 
-prism::render::MaterialBuilder& prism::render::MaterialBuilder::metalic(float metalic)
+prism::render::MaterialBuilder& prism::render::MaterialBuilder::metallic(float metallic)
 {
-    globalMetalicScalar = metalic;
+    globalMetallicScalar = metallic;
     return *this;
 }
 
@@ -120,10 +149,27 @@ prism::render::MaterialBuilder& prism::render::MaterialBuilder::ambientOcclusion
     return *this;
 }
 
+prism::render::MaterialBuilder& prism::render::MaterialBuilder::ambientOcclusion(uint16_t subMaterialId, float ambient)
+{
+    materialsData[subMaterialId].ambientScalar = ambient;
+    return *this;
+}
+
+prism::render::MaterialBuilder& prism::render::MaterialBuilder::ambientOcclusion(float ambient)
+{
+    globalAmbientScalar = ambient;
+    return *this;
+}
+
 prism::render::MaterialBuilder& prism::render::MaterialBuilder::emission(uint16_t subMaterialId, std::filesystem::path filename)
 {
     materialsData[subMaterialId].emission = filename;
     return *this;
+}
+
+prism::render::MaterialBuilder& prism::render::MaterialBuilder::emission(uint16_t subMaterialId, std::array<unsigned char, 4> rgba)
+{
+    return emission(subMaterialId, prism::PGC::colorToPath(rgba[0], rgba[1], rgba[2], rgba[3]));
 }
 
 prism::render::MaterialBuilder& prism::render::MaterialBuilder::emission(uint16_t subMaterialId, float emission)
@@ -138,6 +184,24 @@ prism::render::MaterialBuilder& prism::render::MaterialBuilder::emission(float e
     return *this;
 }
 
+prism::render::MaterialBuilder& prism::render::MaterialBuilder::height(uint16_t subMaterialId, std::filesystem::path filename)
+{
+    materialsData[subMaterialId].height = filename;
+    return *this;
+}
+
+prism::render::MaterialBuilder& prism::render::MaterialBuilder::height(uint16_t subMaterialId, float height)
+{
+    materialsData[subMaterialId].heightScalar = height;
+    return *this;
+}
+
+prism::render::MaterialBuilder& prism::render::MaterialBuilder::height(float height)
+{
+    globalHeightScalar = height;
+    return *this;
+}
+
 prism::scene::MaterialComponent prism::render::MaterialBuilder::complete()
 {
     prism::scene::MaterialComponent material;
@@ -146,16 +210,19 @@ prism::scene::MaterialComponent prism::render::MaterialBuilder::complete()
     items.resize(itemsSize);
     for (uint16_t i = 0; i < itemsSize; ++i) {
 
-        items[i].albedo = materialsData[i].albedo.has_value() ? storage.load(materialsData[i].albedo.value(), prism::PGC::TextureType::ALBEDO) : INVALID_TEXTURE_ID;
-        items[i].normal = materialsData[i].normal.has_value() ? storage.load(materialsData[i].normal.value(), prism::PGC::TextureType::NORMAL) : INVALID_TEXTURE_ID;
-        items[i].metallic = materialsData[i].metallic.has_value() ? storage.load(materialsData[i].metallic.value(), prism::PGC::TextureType::MRAO) : INVALID_TEXTURE_ID;
-        items[i].roughness = materialsData[i].roughness.has_value() ? storage.load(materialsData[i].roughness.value(), prism::PGC::TextureType::MRAO) : INVALID_TEXTURE_ID;
-        items[i].ambient = materialsData[i].ambient.has_value() ? storage.load(materialsData[i].ambient.value(), prism::PGC::TextureType::MRAO) : INVALID_TEXTURE_ID;
-        items[i].emission = materialsData[i].emission.has_value() ? storage.load(materialsData[i].emission.value(), prism::PGC::TextureType::EMISSION) : INVALID_TEXTURE_ID;
+        items[i].albedo = storage.load(materialsData[i].albedo.has_value() ? materialsData[i].albedo.value() : prism::PGC::colorToPath(255, 255, 255, 255), prism::PGC::TextureType::ALBEDO);
+        items[i].normal = storage.load(materialsData[i].normal.has_value() ? materialsData[i].normal.value() : prism::PGC::colorToPath(128, 128, 255, 255), prism::PGC::TextureType::NORMAL);
+        items[i].metallic = storage.load(materialsData[i].metallic.has_value() ? materialsData[i].metallic.value() : prism::PGC::colorToPath(0, 0, 0, 128), prism::PGC::TextureType::MRAOH);
+        items[i].roughness = storage.load(materialsData[i].roughness.has_value() ? materialsData[i].roughness.value() : prism::PGC::colorToPath(0, 0, 0, 128), prism::PGC::TextureType::MRAOH);
+        items[i].ambient = storage.load(materialsData[i].ambient.has_value() ? materialsData[i].ambient.value() : prism::PGC::colorToPath(0, 0, 0, 128), prism::PGC::TextureType::MRAOH);
+        items[i].height = storage.load(materialsData[i].height.has_value() ? materialsData[i].height.value() : prism::PGC::colorToPath(0, 0, 0, 128), prism::PGC::TextureType::MRAOH);
+        items[i].emission = storage.load(materialsData[i].emission.has_value() ? materialsData[i].emission.value() : prism::PGC::colorToPath(0, 0, 0, 225), prism::PGC::TextureType::EMISSION);
 
-        items[i].metalicScalar = materialsData[i].metalicScalar * globalMetalicScalar;
-        items[i].roughnessScalar = materialsData[i].roughnessScalar * globalRoughnessScalar;
-        items[i].emissionScalar = materialsData[i].emissionScalar * globalEmissionScalar;
+        items[i].metallicScalar = std::clamp(materialsData[i].metallicScalar, 0.0f, 1.0f) * std::clamp(globalMetallicScalar, 0.0f, 1.0f);
+        items[i].roughnessScalar = std::clamp(materialsData[i].roughnessScalar, 0.0f, 1.0f) * std::clamp(globalRoughnessScalar, 0.0f, 1.0f);
+        items[i].ambientScalar = std::clamp(materialsData[i].ambientScalar, 0.0f, 1.0f) * std::clamp(globalAmbientScalar, 0.0f, 1.0f);
+        items[i].emissionScalar = std::clamp(materialsData[i].emissionScalar, 0.0f, 1.0f) * std::clamp(globalEmissionScalar, 0.0f, 1.0f);
+        items[i].heightScalar = std::clamp(materialsData[i].heightScalar, 0.0f, 1.0f) * std::clamp(globalHeightScalar, 0.0f, 1.0f);
     }
 
     storage.update();
