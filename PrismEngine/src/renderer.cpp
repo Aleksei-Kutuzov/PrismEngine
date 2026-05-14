@@ -294,22 +294,6 @@ void prism::render::Renderer::drawMesh(prism::scene::MeshComponent::DataType sub
 	);
 }
 
-prism::TextureId prism::render::Renderer::addTexture(const std::string& texturePath)
-{
-	return pgc.textureStorage.load(texturePath);
-}
-
-std::string prism::render::Renderer::getTexturePath(TextureId texture)
-{
-	return pgc.textureStorage.get(texture).path.string();
-}
-
-void prism::render::Renderer::removeTexture(TextureId texture)
-{
-	return pgc.textureStorage.unload(texture);
-}
-
-
 void prism::render::Renderer::clearTextures()
 {
 	pgc.textureStorage.cleanup();

@@ -12,12 +12,16 @@ prism::render::MaterialBuilder& prism::render::MaterialBuilder::size(uint16_t si
     return *this;
 }
 
-prism::render::MaterialBuilder& prism::render::MaterialBuilder::forMesh(prism::scene::MeshComponent mesh)
+prism::render::MaterialBuilder& prism::render::MaterialBuilder::forMesh(prism::scene::MeshComponent& mesh)
 {
     uint16_t matSize = 0;
     scene.getDataFromPool<prism::scene::MeshComponent>(mesh, matSize);
     return size(matSize);
-    return *this;
+}
+
+prism::render::MaterialBuilder& prism::render::MaterialBuilder::forMesh(prism::scene::Entity entity)
+{
+    return forMesh(*scene.getComponent<prism::scene::MeshComponent>(entity));
 }
 
 prism::render::MaterialBuilder& prism::render::MaterialBuilder::copyAll(prism::scene::MaterialComponent material)
