@@ -14,9 +14,21 @@ layout(binding = 0) uniform CameraUBO {
 struct ObjectData {
     mat4 model;
     mat4 normals;
-    uint textureIndex;
+    uint albedoTextureIndex;
+	uint normalTextureIndex;
+	uint metallicTextureIndex;
+	uint roughnessTextureIndex;
+	uint ambientTextureIndex;
+	uint emissionTextureIndex;
+	uint heightTextureIndex;
+	
+	float metallicScalar;
+	float roughnessScalar;
+	float emissionScalar;
+	float heightScalar;
 };
 
+// Runtime-sized array - должен быть последним полем
 layout(std430, binding = 1) readonly buffer ObjectSSBO {
     ObjectData objects[];
 } ssbo;
@@ -28,19 +40,45 @@ layout(location = 3) in vec3 inNormal;
 
 layout(location = 0) out vec3 fragColor;
 layout(location = 1) out vec2 fragTexCoord;
-layout(location = 2) out flat uint fragTextureIndex;
-layout(location = 3) out vec3 fragNormal;
-layout(location = 4) out vec3 fragPos;
+layout(location = 2) out vec3 fragNormal;
+layout(location = 3) out vec3 fragPos;
+
+layout(location = 4) out flat uint fragAlbedoTextureIndex;
+layout(location = 5) out flat uint fragNormalTextureIndex;
+layout(location = 6) out flat uint fragMetallicTextureIndex;
+layout(location = 7) out flat uint fragRoughnessTextureIndex;
+layout(location = 8) out flat uint fragAmbientTextureIndex;
+layout(location = 9) out flat uint fragEmissionTextureIndex;
+layout(location = 10) out flat uint fragHeightTextureIndex;
+
+layout(location = 11) out flat float fragMetallicScalar;
+layout(location = 12) out flat float fragRoughnessScalar;
+layout(location = 13) out flat float fragEmissionScalar;
+layout(location = 14) out flat float fragHeightScalar;
+
 
 void main() {
-    ObjectData object = ssbo.objects[gl_InstanceIndex];
+	ObjectData object = ssbo.objects[gl_InstanceIndex];
 
     vec4 worldPos = object.model * vec4(inPosition, 1.0);
-    gl_Position = camera.proj * camera.view * object.model * vec4(inPosition, 1.0);
+    gl_Position = camera.viewProj * worldPos;
 
-	fragColor = inColor;
-  fragTexCoord = inTexCoord;
-  fragTextureIndex = object.textureIndex;
-	fragNormal = mat3(object.normals) * inNormal;
-  fragPos = worldPos.xyz;
+    fragColor = inColor;
+    fragTexCoord = inTexCoord;
+	
+    fragAlbedoTextureIndex = object.albedoTextureIndex;
+	fragNormalTextureIndex = object.normalTextureIndex;
+	fragMetallicTextureIndex = object.metallicTextureIndex;
+	fragRoughnessTextureIndex = object.roughnessTextureIndex;
+	fragAmbientTextureIndex = object.ambientTextureIndex;
+	fragEmissionTextureIndex = object.emissionTextureIndex;
+	fragHeightTextureIndex = object.heightTextureIndex;
+	
+	fragMetallicScalar = object.metallicScalar;
+	fragRoughnessScalar = object.roughnessScalar;
+	fragEmissionScalar = object.emissionScalar;
+	fragHeightScalar = object.heightScalar;
+	
+    fragNormal = mat3(object.normals) * inNormal;
+    fragPos = worldPos.xyz;
 }

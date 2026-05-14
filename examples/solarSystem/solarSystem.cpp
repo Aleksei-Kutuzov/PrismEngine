@@ -147,7 +147,10 @@ namespace solarSystem {
         Entity planet = scene.createEntity();
 
         scene.addComponent(planet, renderer.loadMesh(EXAMPLE_NAME + "/models/" + name + ".obj"));
-        scene.addComponent(planet, MaterialComponent{ renderer.addTexture(EXAMPLE_NAME + "/textures/" + name + ".png") });
+        scene.addComponent(planet, renderer.materialBuilder().
+            forMesh(planet).
+            albedo(0, name + ".png").
+            complete());
 
         scene.addComponent(planet, TransformComponent{ {}, {90, 0, 0}, { 300, 300, 300 } });
         scene.addComponent(planet, PlanetaryBodyComponent{ perent, orbitRadius, orbitalSpeed, 0, rotationSpeed });
@@ -159,6 +162,8 @@ namespace solarSystem {
     int solarSystemDemo(int targetFps) {
         prism::init();
 
+        prism::basePath = EXAMPLE_NAME;
+
         Scene scene;
         scene.setResource<WindowResource>(WindowResource::CreateCentered("The solar system model", WINDOW_WIDTH, WINDOW_HEIGHT));
         prism::render::Renderer renderer;
@@ -167,14 +172,12 @@ namespace solarSystem {
 
         // Настройка рендерера
         renderer.setDefaultSettings();
-        renderer.settings.defaultPipeline.shaders = { "albedo-vert.spv", "albedo-frag.spv", EXAMPLE_NAME + "/shaders/" };
+        renderer.settings.defaultPipeline.shaders = { "vert.spv", "frag.spv", EXAMPLE_NAME + "/shaders/" };
         renderer.init();
 
         // Загрузка ресурсов
-        MeshComponent skyboxMesh =
-            renderer.loadMesh(EXAMPLE_NAME + "/models/skybox2.obj");
-        MaterialComponent skyboxMaterial = { renderer.addTexture(EXAMPLE_NAME + "/textures/lambert1_emissive.jpeg") };
-
+        MeshComponent skyboxMesh = renderer.loadMesh(EXAMPLE_NAME + "/models/skybox2.obj");
+        MaterialComponent skyboxMaterial = renderer.materialBuilder().size(1).albedo(0, "lambert1_emissive.jpeg").complete();
 
         Entity sun = createPlanet(scene, renderer, "Sun", 0.0f, 0.0f, 0.0f);
         createPlanet(scene, renderer, "Mercury", 100.0f, 15.0f, 8.0f);

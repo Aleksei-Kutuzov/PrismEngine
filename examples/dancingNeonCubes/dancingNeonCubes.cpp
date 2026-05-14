@@ -91,6 +91,8 @@ namespace dancingNeonCubes {
     int dancingNeonCubesDemo(int targetFps) {
         prism::init();
 
+        prism::basePath = EXAMPLE_NAME;
+
         Scene scene;
         WindowResource window = WindowResource::CreateCentered("Dancing NeonCubes - Geometric Ballet", WINDOW_WIDTH, WINDOW_HEIGHT);
         window.setResizable(true);
@@ -112,8 +114,8 @@ namespace dancingNeonCubes {
         MeshComponent cubeMesh = renderer.loadMesh(EXAMPLE_NAME + "/models/neoncube.obj");
         MeshComponent planeMesh = renderer.loadMesh(EXAMPLE_NAME + "/models/plane.obj");
         renderer.updateMeshes();
-        MaterialComponent cubeMaterial = { renderer.addTexture(EXAMPLE_NAME + "/textures/neoncube.png") };
-        MaterialComponent backMaterial = { renderer.addTexture(EXAMPLE_NAME + "/textures/back.jpeg") };
+        MaterialComponent cubeMaterial = renderer.materialBuilder().size(1).albedo(0, "neoncube.png").complete();
+        MaterialComponent backMaterial = renderer.materialBuilder().size(1).albedo(0, "back.jpeg").complete();
 
         // Добавляем ресурс времени
         TimeResource timeRes{};

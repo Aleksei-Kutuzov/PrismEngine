@@ -74,6 +74,8 @@ namespace spinningPrism {
         // ========== ШАГ 1: ИНИЦИАЛИЗАЦИЯ ДВИЖКА ==========
         prism::init();
 
+        prism::basePath = EXAMPLE_NAME;
+
         // Создаем сцену для хранения всех объектов
         Scene scene;
 
@@ -105,7 +107,10 @@ namespace spinningPrism {
         MeshComponent prismMesh = renderer.loadMesh(EXAMPLE_NAME + "/models/prism.obj");
 
         // Загружаем материал для призмы
-        MaterialComponent prismMaterial = { renderer.addTexture(EXAMPLE_NAME + "/textures/prismfasetexturex.png") };
+        MaterialComponent prismMaterial = renderer.materialBuilder().
+            size(1).
+            albedo(0, "color://5F17F3FF").
+            complete();
 
         // Обновляем меши в рендерере (применяем загруженные ресурсы)
         renderer.updateMeshes();
