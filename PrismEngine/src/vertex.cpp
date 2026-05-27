@@ -39,9 +39,8 @@ std::array<VkVertexInputAttributeDescription, 4> prism::PGC::Vertex::getAttribut
 	return attributeDescriptions;
 }
 
-bool prism::PGC::Vertex::operator==(const Vertex& other)
- const {
-	return pos == other.pos && color == other.color && texCoord == other.texCoord;
+bool prism::PGC::Vertex::operator==(const Vertex& other) const {
+	return pos == other.pos && color == other.color && texCoord == other.texCoord && normal == other.normal && tangent == other.tangent;
 }
 
 size_t prism::PGC::VertexHasher::operator()(const Vertex& v) const noexcept {
@@ -62,6 +61,10 @@ size_t prism::PGC::VertexHasher::operator()(const Vertex& v) const noexcept {
 	hash_combine(v.normal.x);
 	hash_combine(v.normal.y);
 	hash_combine(v.normal.z);
+	hash_combine(v.tangent.x);
+	hash_combine(v.tangent.y);
+	hash_combine(v.tangent.z);
+	hash_combine(v.tangent.w);
 
 	return seed;
 }

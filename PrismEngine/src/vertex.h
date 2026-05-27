@@ -18,6 +18,7 @@ namespace prism {
 			glm::vec3 color;
 			glm::vec2 texCoord;
 			glm::vec3 normal;
+			glm::vec4 tangent;
 
 			static VkVertexInputBindingDescription getBindingDescription();
 
@@ -26,7 +27,6 @@ namespace prism {
 			bool operator==(const Vertex& other) const;
 		};
 
-		// Отдельный функтор для хеширования
 		struct VertexHasher {
 			size_t operator()(const Vertex& v) const noexcept;
 		};
