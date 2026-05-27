@@ -357,8 +357,8 @@ namespace prism {
 
             double mouseX = 0.0;                    /// Текущая позиция мыши по X
             double mouseY = 0.0;                    /// Текущая позиция мыши по Y
-            double mouseXPrevious = 0.0;            /// Позиция мыши по X в предыдущем кадре
-            double mouseYPrevious = 0.0;            /// Позиция мыши по Y в предыдущем кадре
+            double deltaMouseX = 0.0;               /// Разница позиции мыши по X с предыдущим кадром
+            double deltaMouseY = 0.0;               /// Разница позиции мыши по Y с предыдущим кадром
             double mouseScrollX = 0.0;              /// Скролл мыши по горизонтали
             double mouseScrollY = 0.0;              /// Скролл мыши по вертикали
         
@@ -470,11 +470,15 @@ namespace prism {
 
             /// @brief Вычисляет смещение мыши по X с предыдущего кадра
             /// @return Разница между текущей и предыдущей позицией мыши по X
-            double getMouseDeltaX() const { return mouseX - mouseXPrevious; }
+            double getMouseDeltaX() const {
+                return deltaMouseX;
+            }
 
             /// @brief Вычисляет смещение мыши по Y с предыдущего кадра
             /// @return Разница между текущей и предыдущей позицией мыши по Y
-            double getMouseDeltaY() const { return mouseY - mouseYPrevious; }
+            double getMouseDeltaY() const { 
+                return deltaMouseY;
+            }
         }; 
     }
 }

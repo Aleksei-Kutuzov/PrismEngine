@@ -14,6 +14,7 @@ void prism::scene::InputSystem::update()
     if (scene->hasResource<InputResource>()) {
         scene->getResource<InputResource>()->updateKeyStates();
         scene->getResource<InputResource>()->resetStuckKeys();
+        updateDeltaMouse();
     }
 
     SDL_Event event;
@@ -70,7 +71,7 @@ void prism::scene::InputSystem::processMouseEvent(SDL_Event event)
     if (!scene->hasResource<InputResource>()) return;
 
     auto input = scene->getResource<InputResource>();
-
+    
     switch (event.type) {
     case SDL_MOUSEMOTION:
         input->mouseX = static_cast<double>(event.motion.x);
@@ -108,4 +109,14 @@ void prism::scene::InputSystem::processWindowEvent(SDL_Event event) {
     else if (event.window.event == SDL_WINDOWEVENT_RESTORED) {
         window->windowMinimized = false;
     }
+}
+
+void prism::scene::InputSystem::updateDeltaMouse() {
+    auto input = scene->getResource<InputResource>();
+
+    int mouseX, mouseY;
+    SDL_GetRelativeMouseState(&mouseX, &mouseY);
+
+    input->deltaMouseX = mouseX;
+    input->deltaMouseY = mouseY;
 }

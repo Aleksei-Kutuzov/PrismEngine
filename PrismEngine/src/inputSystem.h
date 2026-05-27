@@ -39,6 +39,8 @@ namespace prism {
 
             void processWindowEvent(SDL_Event event);
 
+            void updateDeltaMouse();
+
             prism::scene::Scene* scene; /// Указатель на родительскую сцену
         };
     }
