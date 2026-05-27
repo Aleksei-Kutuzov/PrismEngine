@@ -24,6 +24,9 @@ public:
 	}
 
 	virtual ~L1_Object() {
+		if (cleanuped) return;
+
+		cleanuped = true;
 		cleanup();
 	}
 
@@ -33,6 +36,8 @@ public:
 protected:
 	PGC::utils::Context* context;
 	PGC::utils::Settings* settings;
+
+	bool cleanuped = false;
 
 	Derived& derived() {
 		return *static_cast<Derived*>(this);

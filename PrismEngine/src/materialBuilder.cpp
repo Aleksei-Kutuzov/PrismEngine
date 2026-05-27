@@ -48,7 +48,6 @@ prism::render::MaterialBuilder& prism::render::MaterialBuilder::copyAll(prism::s
 prism::render::MaterialBuilder& prism::render::MaterialBuilder::copy(prism::scene::MaterialComponent material, uint16_t subMaterialId)
 {
     uint16_t matSize = 0;
-    auto* renderer = prism::linker.find<prism::scene::Scene, prism::render::Renderer>(&scene);
     prism::scene::MaterialComponent::DataType* mats = const_cast<prism::scene::MaterialComponent::DataType*>(scene.getDataFromPool<prism::scene::MaterialComponent>(material, matSize));
 
     materialsData[subMaterialId].albedo = storage.get(mats[subMaterialId].albedo).path;

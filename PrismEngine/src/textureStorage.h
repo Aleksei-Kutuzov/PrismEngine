@@ -10,7 +10,9 @@ public:
 	TextureId loadImpl(Texture textureData);
 	void unloadImpl(TextureId id);
 	void updateImpl();
+	uint32_t getId(TextureId id);
 	void clearImpl();
 	void cleanupImpl();
+	std::filesystem::path getPathForId(std::filesystem::path path, TextureType type = TextureType::ALBEDO);
 };
 END_NAMESPACE_DECLARATION

@@ -3,13 +3,13 @@
 
 namespace prism {
 	namespace PGC {
-		// Проверка, является ли путь цветом в формате "color://RRGGBBAA"
+		// РџСЂРѕРІРµСЂРєР°, СЏРІР»СЏРµС‚СЃСЏ Р»Рё РїСѓС‚СЊ С†РІРµС‚РѕРј РІ С„РѕСЂРјР°С‚Рµ "color://RRGGBBAA"
 		bool isColorPath(const std::filesystem::path& p);
 
-		// Преобразование RGBA в путь вида "color://RRGGBBAA"
+		// РџСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ RGBA РІ РїСѓС‚СЊ РІРёРґР° "color://RRGGBBAA"
 		std::filesystem::path colorToPath(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
 
-		// Извлечение RGBA из пути-цвета.
+		// РР·РІР»РµС‡РµРЅРёРµ RGBA РёР· РїСѓС‚Рё-С†РІРµС‚Р°.
 		std::array<unsigned char, 4> pathToColor(const std::filesystem::path& p);
 	}
 }

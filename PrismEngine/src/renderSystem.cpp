@@ -40,10 +40,10 @@ void prism::scene::RenderSystem::update()
             PipelineIndex pipelineIndex = renderer->getDefaultPipeline().pipeline;
             
             if (mesh->isValid()) subMeshes = scene->getDataFromPool(*mesh, subMeshesCount);
-            else { logger::info("NO FOUNND SUBMESH " + std::to_string(mesh->id) + "IN DATAPOOL"); continue;/*TODO*/ }
+            else { logger::info("NO FOUNND SUBMESH " + std::to_string(mesh->id) + "IN DATAPOOL"); continue; }
             if (material->isValid()) subMaterials = scene->getDataFromPool(*material, subMaterialsCount);
-            else { logger::info("NO FOUNND SUBMATERIAL " + std::to_string(material->id) + "IN DATAPOOL"); continue;/*TODO*/ }
-            if (subMaterialsCount < subMeshesCount) logger::info("SUBMATERIALS COUNT(" + std::to_string(subMaterialsCount) + ") < SUBMESHES COUNT(" + std::to_string(subMeshesCount) + ")"); /*TODO*/
+            else { logger::info("NO FOUNND SUBMATERIAL " + std::to_string(material->id) + "IN DATAPOOL"); continue; }
+            if (subMaterialsCount < subMeshesCount) logger::info("SUBMATERIALS COUNT(" + std::to_string(subMaterialsCount) + ") < SUBMESHES COUNT(" + std::to_string(subMeshesCount) + ")");
             if (pipeline) pipelineIndex = pipeline->pipeline;
 
             for (uint16_t i = 0; i < subMeshesCount; i++)

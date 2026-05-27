@@ -15,6 +15,9 @@ namespace prism {
 			EMISSION  // RGBA UNORM
 		};
 
+		VkFormat getFormatFromType(prism::PGC::TextureType type);
+		VkDeviceSize getSizeFromFormat(VkFormat format);
+
 		struct Texture
 		{
 			std::filesystem::path path;

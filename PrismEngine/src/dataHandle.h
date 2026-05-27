@@ -6,9 +6,9 @@ namespace prism {
     namespace scene {
         constexpr uint32_t INVALID_DATA_HANDLE = UINT32_MAX;
 
-        /// @brief Хендл на данные в пуле
-        /// @tparam DataType Тип хранимых данных (например SubMesh или SubMaterial)
-        /// @tparam TagType Уникальный маркер для различения пулов одного типа данных
+        /// @brief РҐРµРЅРґР» РЅР° РґР°РЅРЅС‹Рµ РІ РїСѓР»Рµ
+        /// @tparam DataType РўРёРї С…СЂР°РЅРёРјС‹С… РґР°РЅРЅС‹С… (РЅР°РїСЂРёРјРµСЂ SubMesh РёР»Рё SubMaterial)
+        /// @tparam TagType РЈРЅРёРєР°Р»СЊРЅС‹Р№ РјР°СЂРєРµСЂ РґР»СЏ СЂР°Р·Р»РёС‡РµРЅРёСЏ РїСѓР»РѕРІ РѕРґРЅРѕРіРѕ С‚РёРїР° РґР°РЅРЅС‹С…
         template<typename DataType_, typename TagType_>
         struct DataHandle {
             uint32_t id = INVALID_DATA_HANDLE;

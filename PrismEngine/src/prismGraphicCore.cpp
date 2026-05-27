@@ -1,6 +1,6 @@
 #include "prismGraphicCore.h"
 #include "textureLoader.h"
-#include "meshManager.h"
+#include "meshStorage.h"
 #include "descriptorSetLayoutWrapper.h"
 #include "bufferWrapper.h"
 #include "resourcesCreater.h"
@@ -176,7 +176,7 @@ void prism::PGC::PrismGraphicCore::createTextureStorage()
 
 void prism::PGC::PrismGraphicCore::createMeshManager()
 {
-    meshManager.init(&context, &settings);
+    meshStorage.init(&context, &settings);
 }
 
 void prism::PGC::PrismGraphicCore::createBufferObject()
@@ -223,6 +223,7 @@ VkSampleCountFlagBits prism::PGC::PrismGraphicCore::getMaxUsableSampleCount()
 void prism::PGC::PrismGraphicCore::cleanup()
 {
     textureStorage.cleanup();
+    meshStorage.cleanup();
 
     for (auto framebuffer : context.swapChainFramebuffers) {
         vkDestroyFramebuffer(context.device, framebuffer, nullptr);

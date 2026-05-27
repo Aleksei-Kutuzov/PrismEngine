@@ -148,9 +148,9 @@ void prism::PGC::L3::BufferWrapper::copyBufferToImage(utils::Context* context, V
     endSingleTimeCommands(context, commandBuffer);
 }
 
-void prism::PGC::L3::BufferWrapper::createVertexBuffer(utils::Context* context)
+void prism::PGC::L3::BufferWrapper::createVertexBuffer(utils::Context* context, std::vector<Vertex>& vertices)
 {
-    VkDeviceSize bufferSize = sizeof(context->allVertices[0]) * context->allVertices.size();
+    VkDeviceSize bufferSize = sizeof(vertices[0]) * vertices.size();
 
     VkBuffer stagingBuffer;
     VkDeviceMemory stagingBufferMemory;
@@ -158,7 +158,7 @@ void prism::PGC::L3::BufferWrapper::createVertexBuffer(utils::Context* context)
 
     void* data;
     vkMapMemory(context->device, stagingBufferMemory, 0, bufferSize, 0, &data);
-    memcpy(data, context->allVertices.data(), (size_t)bufferSize);
+    memcpy(data, vertices.data(), (size_t)bufferSize);
     vkUnmapMemory(context->device, stagingBufferMemory);
 
     PGC::L3::BufferWrapper::createBuffer(context, bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, context->vertexBuffer, context->vertexBufferMemory);
@@ -169,9 +169,9 @@ void prism::PGC::L3::BufferWrapper::createVertexBuffer(utils::Context* context)
     vkFreeMemory(context->device, stagingBufferMemory, nullptr);
 }
 
-void prism::PGC::L3::BufferWrapper::createIndexBuffer(utils::Context* context)
+void prism::PGC::L3::BufferWrapper::createIndexBuffer(utils::Context* context, std::vector<uint32_t>& indices)
 {
-    VkDeviceSize bufferSize = sizeof(context->allIndices[0]) * context->allIndices.size();
+    VkDeviceSize bufferSize = sizeof(indices[0]) * indices.size();
 
     VkBuffer stagingBuffer;
     VkDeviceMemory stagingBufferMemory;
@@ -179,7 +179,7 @@ void prism::PGC::L3::BufferWrapper::createIndexBuffer(utils::Context* context)
 
     void* data;
     vkMapMemory(context->device, stagingBufferMemory, 0, bufferSize, 0, &data);
-    memcpy(data, context->allIndices.data(), (size_t)bufferSize);
+    memcpy(data, indices.data(), (size_t)bufferSize);
     vkUnmapMemory(context->device, stagingBufferMemory);
 
     PGC::L3::BufferWrapper::createBuffer(context, bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, context->indexBuffer, context->indexBufferMemory);

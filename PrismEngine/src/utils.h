@@ -8,7 +8,6 @@
 #include "bufferObjects.h"
 #include "vertex.h"
 #include "texture.h"
-#include "mesh.h"
 #include "pipelineSettings.h"
 
 namespace prism {
@@ -76,12 +75,6 @@ namespace prism {
 				VkDeviceMemory vertexBufferMemory = VK_NULL_HANDLE;
 				VkBuffer indexBuffer = VK_NULL_HANDLE;
 				VkDeviceMemory indexBufferMemory = VK_NULL_HANDLE;
-
-				std::vector<Vertex> allVertices;
-				std::vector<uint32_t> allIndices;
-				prism::PGC::Mesh mesh;
-				std::vector<uint32_t> freeMeshIndices;
-				bool meshBuffersDirty = false;
 
 				VkDescriptorSetLayout descriptorSetLayout;
 

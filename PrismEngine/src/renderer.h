@@ -9,6 +9,7 @@
 #include "renderObjectBathc.h"
 #include "pipelineComponent.h"
 #include "materialBuilder.h"
+#include "meshBuilder.h"
 
 namespace prism {
 	namespace render {
@@ -36,16 +37,16 @@ namespace prism {
 			void bindDefault();
 			void bindPipeline(PipelineIndex pipeline);
 			void bindObjectsData();
-			void drawMesh(prism::scene::MeshComponent::DataType subMesh, uint32_t instanceCount, uint32_t firstIndex);
+			void drawMesh(const PGC::SubMesh& subMesh, uint32_t instanceCount, uint32_t firstIndex);
 
 			void clearTextures();
 
 
 			MaterialBuilder materialBuilder();
+			MeshBuilder meshBuilder();
 			
 			prism::scene::PipelineComponent getDefaultPipeline();
 
-			prism::scene::MeshComponent loadMesh(const std::string& path);
 			void updateMeshes();
 			void clearMeshes();
 

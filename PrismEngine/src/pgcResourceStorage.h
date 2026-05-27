@@ -14,25 +14,35 @@ public:
 	
 	template<typename... Args>
 	DataId load(std::filesystem::path path, Args&&... args) {
-		auto it = this->pathToId.find(path);
+		auto it = this->pathToId.find(this->derived().getPathForId(path, std::forward<Args>(args)...));
 		if (it != this->pathToId.end()) return it->second;
 
 		this->needUpdate = true;
-		return this->derived().loadImpl(this->loader->load(path, std::forward<Args>(args)...));
+		return this->derived().loadImpl(
+				this->loader->load(path, std::forward<Args>(args)...)
+		);
 	};
+
 	void unload(DataId id) { this->derived().unloadImpl(id); };
-	
-	Data& get(DataId id) { return this->data[id]; };
+	Data& get(DataId id) { return this->data[this->derived().getId(id)]; };
 	
 	void update() { if (this->needUpdate) { this->derived().updateImpl(); this->needUpdate = false; } };
 	void clear() { 
+		if (isCleared) return;
+
+		isCleared = true;
+
 		this->derived().clearImpl();
 		this->data.clear();
 		this->pathToId.clear();
 		this->freeIndices.clear();
 	};
 	
-	void cleanupImpl() {		
+	void cleanupImpl() {
+		if (isDestroyed) return;
+
+		isDestroyed = true;
+		
 		this->clear();
 
 		if (this->loader) {
@@ -57,5 +67,7 @@ protected:
 	std::vector<uint32_t> freeIndices;
 	Loader* loader = nullptr;
 	bool needUpdate = false;
+	bool isDestroyed = false;
+	bool isCleared = false;
 };
 END_NAMESPACE_DECLARATION

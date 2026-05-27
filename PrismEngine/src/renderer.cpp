@@ -1,6 +1,6 @@
 #include "renderer.h"
 #include "scene.h"
-#include "meshManager.h"
+#include "meshStorage.h"
 #include <gtc/quaternion.hpp>
 #include "linker.h"
 
@@ -281,15 +281,14 @@ void prism::render::Renderer::bindObjectsData()
 		0, nullptr);
 }
 
-void prism::render::Renderer::drawMesh(prism::scene::MeshComponent::DataType subMesh, uint32_t instanceCount, uint32_t firstIndex)
+void prism::render::Renderer::drawMesh(const PGC::SubMesh& subMesh, uint32_t instanceCount, uint32_t firstIndex)
 {
-	const PGC::SubMesh& info = pgc.meshManager.getSubMeshInfo(subMesh);
 	vkCmdDrawIndexed(
 		pgc.context.commandBuffers[pgc.context.currentFrame],
-		info.indexCount,
+		subMesh.indexCount,
 		instanceCount,
-		info.indexOffset,
-		info.vertexOffset,
+		subMesh.indexOffset,
+		subMesh.vertexOffset,
 		firstIndex
 	);
 }
@@ -304,31 +303,24 @@ prism::render::MaterialBuilder prism::render::Renderer::materialBuilder()
 	return 	MaterialBuilder(*linker.find<Renderer, prism::scene::Scene>(this), pgc.textureStorage);
 }
 
+prism::render::MeshBuilder prism::render::Renderer::meshBuilder()
+{
+	return MeshBuilder(*linker.find<Renderer, prism::scene::Scene>(this), pgc.meshStorage);
+}
+
 prism::scene::PipelineComponent prism::render::Renderer::getDefaultPipeline()
 {
 	return prism::scene::PipelineComponent{ pgc.context.defaultGraphicsPipelineIndex };
 }
 
-prism::scene::MeshComponent prism::render::Renderer::loadMesh(const std::string& path)
-{
-	auto subMeshIds = pgc.meshManager.load(path);
-
-	if (subMeshIds.empty()) {
-		return prism::scene::MeshComponent::invalid();
-	}
-	prism::scene::Scene* scene = linker.find<Renderer, prism::scene::Scene>(this);
-	return scene->addDataToPool<prism::scene::MeshComponent>(subMeshIds.data(), static_cast<uint16_t>(subMeshIds.size()));
-}
-
-
 void prism::render::Renderer::updateMeshes()
 {
-	pgc.meshManager.update();
+	pgc.meshStorage.update();
 }
 
 void prism::render::Renderer::clearMeshes()
 {
-	pgc.meshManager.clear();
+	pgc.meshStorage.clear();
 	prism::scene::Scene* scene = linker.find<Renderer, prism::scene::Scene>(this);
 	scene->clearDataPool<prism::scene::MeshComponent>();
 }

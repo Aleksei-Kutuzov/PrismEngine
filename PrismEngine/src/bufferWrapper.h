@@ -14,8 +14,8 @@ public:
 	static VkCommandBuffer beginSingleTimeCommands(utils::Context* context);
 	static void transitionImageLayout(utils::Context* context, VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout, uint32_t mipLevels);
 	static void copyBufferToImage(utils::Context* context, VkBuffer buffer, VkImage image, uint32_t width, uint32_t height);
-	static void createVertexBuffer(utils::Context* context);
-	static void createIndexBuffer(utils::Context* context);
+	static void createVertexBuffer(utils::Context* context, std::vector<Vertex>& vertices);
+	static void createIndexBuffer(utils::Context* context, std::vector<uint32_t>& indices);
 	static void createBO(utils::Context* context, VkBuffer& buffer, size_t bufferSize, VkDeviceMemory& bufferMemory, void*& bufferMapped, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties);
 	static void createBufferObjects(utils::Context* context, utils::Settings* settings);
 };
