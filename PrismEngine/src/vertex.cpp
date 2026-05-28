@@ -12,9 +12,9 @@ VkVertexInputBindingDescription prism::PGC::Vertex::getBindingDescription()
 	return bindingDescription;
 }
 
-std::array<VkVertexInputAttributeDescription, 4> prism::PGC::Vertex::getAttributeDescriptions()
+std::array<VkVertexInputAttributeDescription, 5> prism::PGC::Vertex::getAttributeDescriptions()
 {
-	std::array<VkVertexInputAttributeDescription, 4> attributeDescriptions{};
+	std::array<VkVertexInputAttributeDescription, 5> attributeDescriptions{};
 
 	attributeDescriptions[0].binding = 0;
 	attributeDescriptions[0].location = 0;
@@ -35,6 +35,11 @@ std::array<VkVertexInputAttributeDescription, 4> prism::PGC::Vertex::getAttribut
 	attributeDescriptions[3].location = 3;
 	attributeDescriptions[3].format = VK_FORMAT_R32G32B32_SFLOAT;
 	attributeDescriptions[3].offset = offsetof(Vertex, normal);
+
+	attributeDescriptions[4].binding = 0;
+	attributeDescriptions[4].location = 4;
+	attributeDescriptions[4].format = VK_FORMAT_R32G32B32A32_SFLOAT;
+	attributeDescriptions[4].offset = offsetof(Vertex, tangent);
 
 	return attributeDescriptions;
 }

@@ -13,7 +13,7 @@ public:
 	PGC::Texture loadColor(const std::array<unsigned char, 4>& rgba, TextureType type = TextureType::ALBEDO);
 	void cleanup(PGC::Texture* texture);
 private:
-	void createTextureImageFromData(PGC::Texture& texture, const void* pixelData, VkDeviceSize dataSize);
+	void createTextureImageFromData(PGC::Texture& texture, const void* pixelData, VkDeviceSize dataSize, bool finalizeLayout = true);
 	void createTextureImageView(PGC::Texture& texture);
 	void createTextureSampler(PGC::Texture& texture);
 	void generateMipmaps(VkImage image, VkFormat imageFormat, int32_t texWidth, int32_t texHeight, uint32_t mipLevels);

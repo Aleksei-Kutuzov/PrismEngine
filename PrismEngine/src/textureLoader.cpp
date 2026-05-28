@@ -30,14 +30,16 @@ prism::PGC::Texture prism::PGC::L2::TextureLoader::loadTexture(std::filesystem::
     texture.height = texHeight;
     texture.channels = texChannels;
     texture.mipLevels = static_cast<uint32_t>(std::floor(std::log2(std::max(texWidth, texHeight)))) + 1;
-
-    createTextureImageFromData(texture, pixels, imageSize);
+    
+    bool hasMipmaps = texture.mipLevels > 1;
+    createTextureImageFromData(texture, pixels, imageSize, !hasMipmaps);
+    
     createTextureImageView(texture);
     createTextureSampler(texture);
 
     stbi_image_free(pixels);
 
-    if (texture.mipLevels > 1) {
+    if (hasMipmaps) {
         generateMipmaps(texture.image, texture.format, texWidth, texHeight, texture.mipLevels);
     }
 
@@ -55,7 +57,7 @@ prism::PGC::Texture prism::PGC::L2::TextureLoader::loadColor(const std::array<un
     texture.mipLevels = 1;
     texture.channels = 4;
 
-    createTextureImageFromData(texture, rgba.data(), rgba.size() * sizeof(rgba[0]));
+    createTextureImageFromData(texture, rgba.data(), rgba.size() * sizeof(rgba[0]), true);
     createTextureImageView(texture);
     createTextureSampler(texture);
 
@@ -78,7 +80,7 @@ void prism::PGC::L2::TextureLoader::cleanup(PGC::Texture* texture)
 }
 
 
-void prism::PGC::L2::TextureLoader::createTextureImageFromData(PGC::Texture& texture, const void* pixelData, VkDeviceSize dataSize)
+void prism::PGC::L2::TextureLoader::createTextureImageFromData(PGC::Texture& texture, const void* pixelData, VkDeviceSize dataSize, bool finalizeLayout)
 {
     VkBuffer stagingBuffer;
     VkDeviceMemory stagingBufferMemory;
@@ -98,6 +100,10 @@ void prism::PGC::L2::TextureLoader::createTextureImageFromData(PGC::Texture& tex
 
     PGC::L3::BufferWrapper::transitionImageLayout(context, texture.image, texture.format, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, texture.mipLevels);
     PGC::L3::BufferWrapper::copyBufferToImage(context, stagingBuffer, texture.image, static_cast<uint32_t>(texture.width), static_cast<uint32_t>(texture.height));
+
+    if (finalizeLayout) {
+        PGC::L3::BufferWrapper::transitionImageLayout(context, texture.image, texture.format, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, texture.mipLevels);
+    }
 
     PGC::L3::BufferWrapper::transitionImageLayout(context, texture.image, texture.format, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, texture.mipLevels);
 

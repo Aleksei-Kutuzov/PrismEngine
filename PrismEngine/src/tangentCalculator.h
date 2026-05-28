@@ -3,7 +3,9 @@
 #include "layersMacroses.h"
 #include "pgcLayersObjsTemplate.h"
 #include "mesh.h"
-#include <mikktspace.h>
+extern "C" {
+    #include "mikktspace.h"
+}
 
 DECLARE_PGC_LAYER_INSTANCE(L3)
 

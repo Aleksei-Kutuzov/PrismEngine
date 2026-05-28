@@ -4,6 +4,7 @@
 #include "meshLoader.h"
 #include "logger.h"
 #include "pathes.h"
+#include "tangentCalculator.h"
 
 prism::PGC::MeshData prism::PGC::L2::MeshLoader::load(std::filesystem::path path, std::string meshName, prism::PGC::MeshData::Transform transform)
 {
@@ -26,6 +27,8 @@ prism::PGC::MeshData prism::PGC::L2::MeshLoader::load(std::filesystem::path path
     else {
         logger::error("Unsupported mesh format: " + ext.string());
     }
+
+    prism::PGC::L3::TangentCalculator::generateTangents(meshData.vertices, meshData.indices);
 
     return meshData;
 }

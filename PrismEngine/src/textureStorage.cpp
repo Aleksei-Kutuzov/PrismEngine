@@ -1,6 +1,7 @@
-#include <memory>
+﻿#include <memory>
 #include "textureStorage.h"
 #include "textureLoader.h"
+#include <iostream>
 
 using BaseStorage = prism::PGC::L1::Storage < prism::TextureId, prism::PGC::Texture, prism::PGC::L2::TextureLoader, prism::PGC::L1::TextureStorage> ;
 
@@ -89,7 +90,6 @@ void prism::PGC::L1::TextureStorage::updateImpl()
 
         descriptorWrites.push_back(descriptorWrite);
     }
-
 
     vkUpdateDescriptorSets(this->context->device,
         static_cast<uint32_t>(descriptorWrites.size()),

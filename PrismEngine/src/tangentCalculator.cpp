@@ -28,7 +28,7 @@ void prism::PGC::L3::TangentCalculator::generateTangents(std::vector<Vertex>& ve
 
 int prism::PGC::L3::TangentCalculator::getNumFaces(const SMikkTSpaceContext* pCtx)
 {
-    auto* mesh = static_cast<prism::PGC::MeshData*>(pCtx->m_pUserData);
+    auto* mesh = static_cast<MikkTSpaceData*>(pCtx->m_pUserData);
     return static_cast<int>(mesh->indices.size() / 3);
 }
 
@@ -39,7 +39,7 @@ int prism::PGC::L3::TangentCalculator::getNumVertsOfFace(const SMikkTSpaceContex
 
 void prism::PGC::L3::TangentCalculator::getPosition(const SMikkTSpaceContext* pCtx, float fvPosOut[], int iFace, int iVert)
 {
-    auto* mesh = static_cast<prism::PGC::MeshData*>(pCtx->m_pUserData);
+    auto* mesh = static_cast<MikkTSpaceData*>(pCtx->m_pUserData);
     int idx = mesh->indices[iFace * 3 + iVert];
     fvPosOut[0] = mesh->vertices[idx].pos[0];
     fvPosOut[1] = mesh->vertices[idx].pos[1];
@@ -48,7 +48,7 @@ void prism::PGC::L3::TangentCalculator::getPosition(const SMikkTSpaceContext* pC
 
 void prism::PGC::L3::TangentCalculator::getNormal(const SMikkTSpaceContext* pCtx, float fvNormOut[], int iFace, int iVert)
 {
-    auto* mesh = static_cast<prism::PGC::MeshData*>(pCtx->m_pUserData);
+    auto* mesh = static_cast<MikkTSpaceData*>(pCtx->m_pUserData);
     int idx = mesh->indices[iFace * 3 + iVert];
     fvNormOut[0] = mesh->vertices[idx].normal[0];
     fvNormOut[1] = mesh->vertices[idx].normal[1];
@@ -57,7 +57,7 @@ void prism::PGC::L3::TangentCalculator::getNormal(const SMikkTSpaceContext* pCtx
 
 void prism::PGC::L3::TangentCalculator::getTexCoord(const SMikkTSpaceContext* pCtx, float fvTexcOut[], int iFace, int iVert)
 {
-    auto* mesh = static_cast<prism::PGC::MeshData*>(pCtx->m_pUserData);
+    auto* mesh = static_cast<MikkTSpaceData*>(pCtx->m_pUserData);
     int idx = mesh->indices[iFace * 3 + iVert];
     fvTexcOut[0] = mesh->vertices[idx].texCoord[0];
     fvTexcOut[1] = mesh->vertices[idx].texCoord[1];
@@ -65,7 +65,7 @@ void prism::PGC::L3::TangentCalculator::getTexCoord(const SMikkTSpaceContext* pC
 
 void prism::PGC::L3::TangentCalculator::setTSpaceBasic(const SMikkTSpaceContext* pCtx, const float fvTangent[], const float fSign, int iFace, int iVert)
 {
-    auto* mesh = static_cast<prism::PGC::MeshData*>(pCtx->m_pUserData);
+    auto* mesh = static_cast<MikkTSpaceData*>(pCtx->m_pUserData);
     int idx = mesh->indices[iFace * 3 + iVert];
     mesh->vertices[idx].tangent[0] = fvTangent[0];
     mesh->vertices[idx].tangent[1] = fvTangent[1];
