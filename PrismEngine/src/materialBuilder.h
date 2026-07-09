@@ -1,13 +1,14 @@
 ﻿#pragma once
-#include "scene.h"
-#include "meshComponent.h"
-#include "materialComponent.h"
-#include "textureStorage.h"
 #include <string>
 #include <optional>
 #include <vector>
 #include <filesystem>
 #include <array>
+#include "scene.h"
+#include "meshComponent.h"
+#include "materialComponent.h"
+#include "textureStorage.h"
+#include "assetSpec.h"
 
 namespace prism {
     namespace render {
@@ -21,11 +22,10 @@ namespace prism {
          * - Скалярные множители для каждого канала
          * - Поддержку нескольких субматериалов (для много-подмешевых объектов)
          * - Глобальные модификаторы, применяемые ко всем субматериалам
-         * - Загрузку сплошных цветов через путь `color://RRGGBBAA` или std::array<unsigned char, 4>
+         * - Загрузку сплошных цветов через std::array<unsigned char, 4>
          *
-         * @par Поддерживаемые форматы путей:
+         * @par Поддерживаемые форматы:
          * - Обычные пути: `"textures/brick_albedo.png"`
-         * - Цветовые псевдо-пути: `"color://5F17F3FF"` (RRGGBBAA в hex)
          * - Прямая передача цвета: `albedo(0, {95, 23, 243, 255})`
          *
          * @par Пример использования:
@@ -36,7 +36,7 @@ namespace prism {
          *     .normal(0, "textures/brick_normal.png")
          *     .metallic(0, 0.8f)
          *     .roughness(0, 0.4f)
-         *     .emission(1, "color://FF8800FF")  // Оранжевое свечение без файла
+         *     .emission(1, {255, 112, 52})       // Оранжевое свечение без файла
          *     .height(0, 0.5f)                   // Параллакс-смещение
          *     .complete();
          * @endcode
@@ -55,13 +55,13 @@ namespace prism {
              * Используется только внутри MaterialBuilder.
              */
             struct MaterialData {
-                std::optional<std::filesystem::path> albedo;    ///< @brief Путь к текстуре альбедо (базовый цвет, sRGB)
-                std::optional<std::filesystem::path> normal;    ///< @brief Путь к карте нормалей (линейное пространство)
-                std::optional<std::filesystem::path> metallic;  ///< @brief Путь к карте металличности (одноканальная, линейная)
-                std::optional<std::filesystem::path> roughness; ///< @brief Путь к карте шероховатости (одноканальная, линейная)
-                std::optional<std::filesystem::path> ambient;   ///< @brief Путь к карте Ambient Occlusion (одноканальная)
-                std::optional<std::filesystem::path> emission;  ///< @brief Путь к карте эмиссии (sRGB, HDR-значения возможны)
-                std::optional<std::filesystem::path> height;    ///< @brief Путь к карте высоты (для паралакс-маппинга/тесселяции)
+                std::optional<assets::AssetSpec> albedo;    ///< @brief Спецификация текстуры альбедо (базовый цвет, sRGB)
+                std::optional<assets::AssetSpec> normal;    ///< @brief Спецификация к карте нормалей (линейное пространство)
+                std::optional<assets::AssetSpec> metallic;  ///< @brief Спецификация к карте металличности (одноканальная, линейная)
+                std::optional<assets::AssetSpec> roughness; ///< @brief Спецификация к карте шероховатости (одноканальная, линейная)
+                std::optional<assets::AssetSpec> ambient;   ///< @brief Спецификация к карте Ambient Occlusion (одноканальная)
+                std::optional<assets::AssetSpec> emission;  ///< @brief Спецификация к карте эмиссии (sRGB, HDR-значения возможны)
+                std::optional<assets::AssetSpec> height;    ///< @brief Спецификация к карте высоты (для паралакс-маппинга/тесселяции)
 
                 float metallicScalar = 1.0f;   ///< @brief Множитель металличности [0.0–1.0] для данного субматериала
                 float roughnessScalar = 1.0f;  ///< @brief Множитель шероховатости [0.0–1.0] для данного субматериала
@@ -178,9 +178,9 @@ namespace prism {
             /**
              * @brief Устанавливает текстуру альбедо для субматериала.
              * @param subMaterialId Индекс субматериала (0-based).
-             * @param filename Путь к файлу текстуры или псевдо-путь `color://RRGGBBAA`.
+             * @param filename Путь к файлу текстуры.
              * @return Ссылка на текущий объект для цепочечных вызовов.
-             * @note Текстура/цвет будет загружен в хранилище при вызове complete().
+             * @note Текстура будет загружена в хранилище при вызове complete().
              * @see albedo(uint16_t, std::array<unsigned char, 4>)
              */
             MaterialBuilder& albedo(uint16_t subMaterialId, std::filesystem::path filename);
@@ -190,7 +190,6 @@ namespace prism {
              * @param subMaterialId Индекс субматериала.
              * @param rgba Массив из 4 байт {R, G, B, A} в диапазоне [0–255].
              * @return Ссылка на текущий объект.
-             * @note Внутри преобразуется в псевдо-путь `color://RRGGBBAA` для совместимости с хранилищем.
              */
             MaterialBuilder& albedo(uint16_t subMaterialId, std::array<unsigned char, 4> rgba);
 
@@ -218,7 +217,7 @@ namespace prism {
              * Один вызов устанавливает пути для трёх каналов одновременно.
              *
              * @param subMaterialId Индекс субматериала.
-             * @param filename Путь к MRAO-текстуре или `color://RRGGBBAA`.
+             * @param filename Путь к MRAO-текстуре.
              * @return Ссылка на текущий объект.
              * @note Если нужны отдельные текстуры — используйте metallic()/roughness()/ambientOcclusion() раздельно.
              * @see metallic(), roughness(), ambientOcclusion()
@@ -240,7 +239,7 @@ namespace prism {
              * Один вызов устанавливает пути для четырёх каналов одновременно.
              *
              * @param subMaterialId Индекс субматериала.
-             * @param filename Путь к MRAOH-текстуре или `color://RRGGBBAA`.
+             * @param filename Путь к MRAOH-текстуре.
              * @return Ссылка на текущий объект.
              * @note Эквивалентно последовательному вызову mrao() + height() с одним файлом.
              */
@@ -262,7 +261,7 @@ namespace prism {
             /**
              * @brief Устанавливает текстуру металличности для субматериала.
              * @param subMaterialId Индекс субматериала.
-             * @param filename Путь к одноканальной текстуре или `color://RRGGBBAA`.
+             * @param filename Путь к одноканальной текстуре.
              * @return Ссылка на текущий объект.
              */
             MaterialBuilder& metallic(uint16_t subMaterialId, std::filesystem::path filename);
@@ -292,7 +291,7 @@ namespace prism {
             /**
              * @brief Устанавливает текстуру шероховатости для субматериала.
              * @param subMaterialId Индекс субматериала.
-             * @param filename Путь к одноканальной текстуре или `color://RRGGBBAA`.
+             * @param filename Путь к одноканальной текстуре.
              * @return Ссылка на текущий объект.
              */
             MaterialBuilder& roughness(uint16_t subMaterialId, std::filesystem::path filename);
@@ -321,7 +320,7 @@ namespace prism {
             /**
              * @brief Устанавливает текстуру Ambient Occlusion для субматериала.
              * @param subMaterialId Индекс субматериала.
-             * @param filename Путь к одноканальной AO-текстуре или `color://RRGGBBAA`.
+             * @param filename Путь к одноканальной AO-текстуре.
              * @return Ссылка на текущий объект.
              */
             MaterialBuilder& ambientOcclusion(uint16_t subMaterialId, std::filesystem::path filename);
@@ -349,7 +348,7 @@ namespace prism {
             /**
              * @brief Устанавливает текстуру эмиссии для субматериала.
              * @param subMaterialId Индекс субматериала.
-             * @param filename Путь к текстуре свечения или `color://RRGGBBAA` (поддерживает HDR).
+             * @param filename Путь к текстуре свечения.
              * @return Ссылка на текущий объект.
              */
             MaterialBuilder& emission(uint16_t subMaterialId, std::filesystem::path filename);
@@ -388,7 +387,7 @@ namespace prism {
              * Используется для паралакс-маппинга, тесселяции или дисплейсмент-маппинга.
              *
              * @param subMaterialId Индекс субматериала.
-             * @param filename Путь к одноканальной высоте-текстуре или `color://RRGGBBAA`.
+             * @param filename Путь к одноканальной высоте-текстуре.
              * @return Ссылка на текущий объект.
              * @note Значения высоты обычно интерпретируются как: 0 = минимум, 255 = максимум смещения.
              */
@@ -417,7 +416,6 @@ namespace prism {
              *
              * Выполняет:
              * 1. Загрузку всех указанных текстур/цветов через TextureStorage
-             *    - Пути вида `color://RRGGBBAA` преобразуются в процедурные 1×1 текстуры
              * 2. Применение глобальных и локальных скаляров (с std::clamp[0.0; 1.0])
              * 3. Обновление кэша хранилища текстур (storage.update())
              * 4. Добавление готового материала в пул компонентов сцены
