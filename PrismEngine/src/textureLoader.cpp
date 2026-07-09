@@ -8,21 +8,16 @@
 #include "resourcesPath.h"
 
 
-prism::PGC::Texture prism::PGC::L2::TextureLoader::load(std::filesystem::path path, TextureType type)
+prism::PGC::Texture prism::PGC::L2::TextureLoader::loadTexture(prism::assets::TexturePath texturePath)
 {
-    if (isColorPath(path)) return loadColor(pathToColor(path));
-    return loadTexture(path, type);
-}
+    texturePath.path = basePath / texturesDir / texturePath.path;
 
-prism::PGC::Texture prism::PGC::L2::TextureLoader::loadTexture(std::filesystem::path texturePath, TextureType type)
-{
 	PGC::Texture texture;
-	texture.path = basePath / texturesDir / texturePath;
-    texture.type = type;
-    texture.format = getFormatFromType(type);
+    texture.assetSpec = texturePath;
+    texture.format = getFormatFromType(texturePath.type);
 
     int texWidth, texHeight, texChannels;
-    stbi_uc* pixels = stbi_load(texture.path.generic_string().c_str(), &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
+    stbi_uc* pixels = stbi_load(std::get<assets::TexturePath>(texture.assetSpec).path.generic_string().c_str(), &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
     if (!pixels) throw std::runtime_error("failed to load texture image!");
 
     VkDeviceSize imageSize = static_cast<VkDeviceSize>(texWidth) * texHeight * 4;
@@ -46,18 +41,17 @@ prism::PGC::Texture prism::PGC::L2::TextureLoader::loadTexture(std::filesystem::
     return texture;
 }
 
-prism::PGC::Texture prism::PGC::L2::TextureLoader::loadColor(const std::array<unsigned char, 4>& rgba, TextureType type)
+prism::PGC::Texture prism::PGC::L2::TextureLoader::loadColor(prism::assets::TextureColor textureColor)
 {
     PGC::Texture texture;
-    texture.path = colorToPath(rgba[0], rgba[1], rgba[2], rgba[3]);
-    texture.type = type;
-    texture.format = getFormatFromType(type);
+    texture.assetSpec = textureColor;
+    texture.format = getFormatFromType(textureColor.type);
     texture.width = 1;
     texture.height = 1;
     texture.mipLevels = 1;
     texture.channels = 4;
 
-    createTextureImageFromData(texture, rgba.data(), rgba.size() * sizeof(rgba[0]), true);
+    createTextureImageFromData(texture, textureColor.color.data(), textureColor.color.size() * sizeof(textureColor.color[0]), true);
     createTextureImageView(texture);
     createTextureSampler(texture);
 

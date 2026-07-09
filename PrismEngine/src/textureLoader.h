@@ -8,9 +8,8 @@ DECLARE_PGC_LAYER_INSTANCE(L2)
 class TextureLoader {
 public:
 	TextureLoader(utils::Context* context, utils::Settings* settings) : context(context), settings(settings) {};
-	prism::PGC::Texture load(std::filesystem::path path, TextureType type = TextureType::ALBEDO);
-	prism::PGC::Texture loadTexture(std::filesystem::path texturePath, TextureType type = TextureType::ALBEDO);
-	PGC::Texture loadColor(const std::array<unsigned char, 4>& rgba, TextureType type = TextureType::ALBEDO);
+	prism::PGC::Texture loadTexture(prism::assets::TexturePath texturePath);
+	PGC::Texture loadColor(prism::assets::TextureColor textureColor);
 	void cleanup(PGC::Texture* texture);
 private:
 	void createTextureImageFromData(PGC::Texture& texture, const void* pixelData, VkDeviceSize dataSize, bool finalizeLayout = true);
