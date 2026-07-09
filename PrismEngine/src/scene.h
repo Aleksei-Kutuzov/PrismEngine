@@ -274,8 +274,5 @@ namespace prism {
             SystemManager systemManager;      /// Менеджер систем
             ResourceManager resourceManager;  /// Менеджер ресурсов
         };
-
-        template<>
-        bool Scene::removeComponent<MeshComponent>(Entity entityId);
     }
 }
