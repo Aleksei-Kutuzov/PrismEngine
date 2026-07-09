@@ -11,7 +11,6 @@
 #include "componentManager.h"
 #include "systemManager.h"
 #include "resourceManager.h"
-#include "meshComponent.h"
 #include "linker.h"
 
 namespace prism {
