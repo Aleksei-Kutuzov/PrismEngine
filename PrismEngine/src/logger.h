@@ -32,6 +32,7 @@ namespace prism::logger {
         NO_FOUND_LINK_TO_OBJECT,
         NO_FOUND_WINDOW_RESOURCE,
         ERROR_GETTING_BASE_PATH,
+        RUNTIME_ERROR,
     };
 
     /**

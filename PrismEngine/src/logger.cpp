@@ -45,7 +45,8 @@ namespace prism::logger {
             {Error::RENDERER_IS_NOT_INSTALLED_FOR_SCENE, "The renderer is not installed for the scene, but it was required due to the graphics method call"},
             {Error::NO_FOUND_LINK_TO_OBJECT, "A TYPE1 object requested a link to a TYPE2 object, but they were not linked"},
             {Error::NO_FOUND_WINDOW_RESOURCE, "No found WindowResource in scene"},
-            {Error::ERROR_GETTING_BASE_PATH, "Error getting the base path"}
+            {Error::ERROR_GETTING_BASE_PATH, "Error getting the base path"},
+            {Error::RUNTIME_ERROR, "Runtime error"}
         };
     }
 
