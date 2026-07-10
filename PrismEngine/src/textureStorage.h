@@ -1,8 +1,9 @@
 #pragma once
+#include <unordered_map>
 #include "pgcResourceStorage.h"
 #include "textureLoader.h"
 #include "assetSpec.h"
-#include <unordered_map>
+#include "idPool.h"
 
 DECLARE_PGC_LAYER_INSTANCE(L1)
 
@@ -18,14 +19,11 @@ public:
 	void cleanupImpl();
 
 private:
-	TextureId addId();
-	void delId(TextureId id);
 
 	PGC::L2::TextureLoader* loader;
 
 	std::vector<Texture> data;
-	std::stack<TextureId> freeIds;
-	TextureId nextId = INVALID_TEXTURE_ID + 1;
+	prism::utils::IdPool<TextureId, INVALID_TEXTURE_ID + 1, INVALID_TEXTURE_ID> pool;
 	bool isActual;
 };
 

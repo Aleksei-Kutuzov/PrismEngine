@@ -6,16 +6,6 @@ void prism::PGC::L1::TextureStorage::createImpl() {
 	data.push_back(loader->loadColor(assets::TextureColor{ {251, 126, 253}, TextureType::ALBEDO }));
 }
 
-prism::TextureId prism::PGC::L1::TextureStorage::addId() {
-	if (freeIds.empty()) return nextId++;
-	TextureId r = freeIds.top();
-	freeIds.pop();
-	return r;
-}
-void prism::PGC::L1::TextureStorage::delId(TextureId id) {
-	if (id != INVALID_TEXTURE_ID) freeIds.push(id);
-}
-
 prism::TextureId prism::PGC::L1::TextureStorage::load(assets::AssetSpec assetSpec) {
 	for (size_t i = 0; i < data.size(); i++)
 	{
@@ -28,7 +18,7 @@ prism::TextureId prism::PGC::L1::TextureStorage::load(assets::AssetSpec assetSpe
 		[](auto& bad) -> Texture {throw std::runtime_error("Unexpected texture asset type");}
 	}, assetSpec);
 
-	auto id = addId();
+	auto id = pool.newId();
 
 	if (id + 1 > data.size()) data.push_back(std::move(texture)); 
 	else data[id] = std::move(texture);
@@ -49,7 +39,7 @@ prism::PGC::Texture& prism::PGC::L1::TextureStorage::getData(TextureId id) {
 
 void prism::PGC::L1::TextureStorage::unload(TextureId id) {
 	loader->cleanup(&getData(id));
-	delId(id);
+	pool.delId(id);
 };
 
 
