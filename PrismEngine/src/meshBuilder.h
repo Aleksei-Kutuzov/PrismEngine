@@ -9,32 +9,27 @@
 namespace prism {
 	namespace render {
 		struct MeshBuilder {
+		public:
 			prism::scene::Scene& scene;
 			prism::PGC::L1::MeshStorage& storage;
 
-			struct MeshParam {
-				std::string sourceMeshName;
-				std::optional<std::filesystem::path> path;
-				prism::PGC::MeshData::Transform transform;
-			};
-
-			
-			std::vector<MeshParam> meshParams;
+			std::vector<assets::AssetSpec> meshParams;
 
 			MeshBuilder(prism::scene::Scene& scene, prism::PGC::L1::MeshStorage& storage) : scene(scene), storage(storage) {}
 
 			MeshBuilder& size(uint16_t size);
 
 			MeshBuilder& copyAll(prism::scene::MeshComponent mesh);
-			MeshBuilder& copy(prism::scene::MeshComponent mesh, uint16_t subMeshId);
+			MeshBuilder& copy(uint16_t subMeshId, prism::scene::MeshComponent mesh);
 
-			MeshBuilder& addSubMesh(std::filesystem::path filename, uint16_t subMeshId);
-			MeshBuilder& addSubMesh(std::filesystem::path filename, std::string sourceMeshName, uint16_t subMeshId);
+			MeshBuilder& model(uint16_t subMeshId, std::filesystem::path filepath);
+			MeshBuilder& model(uint16_t subMeshId, std::filesystem::path filepath, std::string sourceMeshName);
 			
-			MeshBuilder& addCube(uint16_t subMeshId);
-			MeshBuilder& addPlane(uint16_t subMeshId);
-			MeshBuilder& addIcoSphere(uint16_t subMeshId, uint8_t subdivisiones);
-			MeshBuilder& addUvSphere(uint16_t subMeshId, uint8_t subdivsVert, uint8_t subdivsHoriz);
+			MeshBuilder& cube(uint16_t subMeshId);
+			MeshBuilder& plane(uint16_t subMeshId);
+			MeshBuilder& grid(uint16_t subMeshId, uint16_t subdivsX, uint16_t subdivsZ, uint16_t repeatX, uint16_t repeatZ);
+			MeshBuilder& icoSphere(uint16_t subMeshId, uint8_t subdivisiones);
+			MeshBuilder& uvSphere(uint16_t subMeshId, uint16_t subdivsVert, uint16_t subdivsHoriz);
 			
 			MeshBuilder& position(uint16_t subMeshId, glm::vec3 position);
 			MeshBuilder& rotation(uint16_t subMeshId, glm::vec3 rotation);
@@ -47,6 +42,9 @@ namespace prism {
 			MeshBuilder& scaleBy(uint16_t subMeshId, glm::vec3 scaleBy);
 			
 			prism::scene::MeshComponent complete();
+
+		private:
+			prism::PGC::MeshTransform& getMeshTransform(uint16_t subMeshId);
 		};
 	}
 }
