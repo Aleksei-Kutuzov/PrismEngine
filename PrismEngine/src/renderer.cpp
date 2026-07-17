@@ -283,12 +283,14 @@ void prism::render::Renderer::bindObjectsData()
 
 void prism::render::Renderer::drawMesh(const PGC::SubMesh& subMesh, uint32_t instanceCount, uint32_t firstIndex)
 {
+	prism::PGC::MeshData meshData = pgc.meshStorage.getData(subMesh);
+
 	vkCmdDrawIndexed(
 		pgc.context.commandBuffers[pgc.context.currentFrame],
-		subMesh.indexCount,
+		meshData.indexCount,
 		instanceCount,
-		subMesh.indexOffset,
-		subMesh.vertexOffset,
+		meshData.indexOffset,
+		meshData.vertexOffset,
 		firstIndex
 	);
 }
