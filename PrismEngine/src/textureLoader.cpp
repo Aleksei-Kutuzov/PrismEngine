@@ -99,8 +99,6 @@ void prism::PGC::L2::TextureLoader::createTextureImageFromData(PGC::Texture& tex
         PGC::L3::BufferWrapper::transitionImageLayout(context, texture.image, texture.format, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, texture.mipLevels);
     }
 
-    PGC::L3::BufferWrapper::transitionImageLayout(context, texture.image, texture.format, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, texture.mipLevels);
-
     vkDestroyBuffer(context->device, stagingBuffer, nullptr);
     vkFreeMemory(context->device, stagingBufferMemory, nullptr);
 }
