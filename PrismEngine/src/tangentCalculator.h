@@ -11,12 +11,14 @@ DECLARE_PGC_LAYER_INSTANCE(L3)
 
 class TangentCalculator {
 public:
-    static void generateTangents(std::vector<Vertex>& vertices, std::vector<uint32_t>& indices);
+    static void generateTangents(Vertex* verticesBegin, size_t verticesCount, uint32_t* indicesBegin, size_t indicesCount);
 
 private:
     struct MikkTSpaceData {
-        std::vector<Vertex>& vertices;
-        std::vector<uint32_t>& indices;
+        Vertex* verticesBegin;
+        size_t verticesCount;
+        uint32_t* indicesBegin;
+        size_t indicesCount;
     };
 
     static int getNumFaces(const SMikkTSpaceContext* pCtx);
