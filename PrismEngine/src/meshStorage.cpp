@@ -1,37 +1,52 @@
 #include "meshStorage.h"
 #include "meshLoader.h"
-#include "mesh.h"
 #include "bufferWrapper.h"
-#include <sstream>
+#include "logger.h"
 
-using BaseStorage = prism::PGC::L1::Storage<prism::scene::MeshComponent::DataType, prism::PGC::MeshData, prism::PGC::L2::MeshLoader, prism::PGC::L1::MeshStorage>;
 
 void prism::PGC::L1::MeshStorage::createImpl()
 {
-    BaseStorage::createImpl();
+    loader = new prism::PGC::L2::MeshLoader(context, settings);
 }
 
-prism::scene::MeshComponent::DataType prism::PGC::L1::MeshStorage::loadImpl(MeshData meshData)
+prism::scene::MeshComponent::DataType prism::PGC::L1::MeshStorage::load(prism::assets::AssetSpec assetSpec)
 {
-    meshData.info.vertexOffset += static_cast<uint32_t>(allVertices.size());
-    meshData.info.indexOffset += static_cast<uint32_t>(allIndices.size());
-
-    allVertices.insert(allVertices.end(), meshData.vertices.begin(), meshData.vertices.end());
-    allIndices.insert(allIndices.end(), meshData.indices.begin(), meshData.indices.end());
-
-    pathToId.emplace(getPathForId(meshData.path, meshData.name, meshData.transform), meshData.info);
-
-    uint32_t index = getNextAvailableIndex();
-    meshData.info.id = index;
-
-    if (index >= data.size()) {
-        data.push_back(meshData);
-    }
-    else {
-        data[index] = meshData;
+    for (size_t i = 0; i < data.size(); i++)
+    {
+        if (data[i].assetSpec == assetSpec) return i + 1;
     }
 
-    return meshData.info;
+    MeshData mesh = std::visit(prism::assets::overloaded{
+        [this](assets::MeshPath i) { return loader->loadObj(i, allVertices, allIndices); },
+        [this](assets::MeshCube f) { return loader->loadCube(f, allVertices, allIndices); },
+        [this](assets::MeshPlane p){ return loader->loadPlane(p, allVertices, allIndices); },
+        [this](assets::MeshGrid g) { return loader->loadGrid(g, allVertices, allIndices); },
+        [this](assets::MeshIcoSphere p) { return loader->loadIcoSphere(p, allVertices, allIndices); },
+        [this](assets::MeshUvSphere u) { return loader->loadUvSphere(u, allVertices, allIndices); },
+        [](auto& bad) -> MeshData {throw std::runtime_error("Unexpected mesh asset type"); }
+        }, assetSpec);
+
+    auto id = pool.newId();
+
+    if (id > data.size()) data.push_back(std::move(mesh));
+    else data[id - 1] = std::move(mesh);
+
+    isActual = false;
+    return id;
+}
+
+prism::PGC::MeshData& prism::PGC::L1::MeshStorage::getData(prism::scene::MeshComponent::DataType id)
+{
+    if (id != 0) {
+        id--;
+        try {
+            return data.at(id);
+        }
+        catch (const std::out_of_range& e) {
+            logger::logError(logger::Error::RUNTIME_ERROR, std::string(e.what()));
+        }
+    }
+    throw std::runtime_error("Invalid mesh ID");
 }
 
 void clenupBuffers(prism::PGC::utils::Context* context) {
@@ -55,7 +70,7 @@ void clenupBuffers(prism::PGC::utils::Context* context) {
     }
 }
 
-void prism::PGC::L1::MeshStorage::updateImpl()
+void prism::PGC::L1::MeshStorage::update()
 {
     clenupBuffers(this->context);
 
@@ -67,12 +82,7 @@ void prism::PGC::L1::MeshStorage::updateImpl()
     }
 }
 
-uint32_t prism::PGC::L1::MeshStorage::getId(prism::scene::MeshComponent::DataType dataId)
-{
-    return dataId.id;
-}
-
-void prism::PGC::L1::MeshStorage::clearImpl()
+void prism::PGC::L1::MeshStorage::clear()
 {
     clenupBuffers(this->context);
 
@@ -80,12 +90,11 @@ void prism::PGC::L1::MeshStorage::clearImpl()
     allIndices.clear();
 }
 
-std::filesystem::path prism::PGC::L1::MeshStorage::getPathForId(std::filesystem::path path, std::string meshName, prism::PGC::MeshData::Transform transform)
-{
-    std::ostringstream oss;
-    oss << path.string() << "@" << meshName << "@"
-        << transform.position.x << "," << transform.position.y << "," << transform.position.z << "@"
-        << transform.rotation.x << "," << transform.rotation.y << "," << transform.rotation.z << "," << transform.rotation.w << "@"
-        << transform.scale.x << "," << transform.scale.y << "," << transform.scale.z;
-    return std::filesystem::path(oss.str());
-}
+void prism::PGC::L1::MeshStorage::cleanupImpl() {
+    this->clear();
+
+    if (this->loader) {
+        delete this->loader;
+        this->loader = nullptr;
+    }
+};
