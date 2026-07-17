@@ -4,6 +4,11 @@
 #include <variant>
 #include <array>
 
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm.hpp>
+#include <gtc/quaternion.hpp>
+#include <gtc/matrix_transform.hpp>
+
 namespace prism {
 	namespace PGC {
 		enum class TextureType : uint8_t {
@@ -12,6 +17,15 @@ namespace prism {
 			MRAOH,     // RGBA UNORM (R=Metallic, G=Roughness, B=AO, A=Height)
 			EMISSION,  // RGBA UNORM
 		};
+
+		struct MeshTransform {
+			glm::vec3 position = { 0.f, 0.f , 0.f };
+			glm::quat rotation;
+			glm::vec3 scale = { 1.f, 1.f, 1.f };
+
+			bool operator==(const MeshTransform& other) const;
+			bool operator!=(const MeshTransform& other) const;
+		};
 	}
 
 	namespace assets {
@@ -19,63 +33,69 @@ namespace prism {
 			std::filesystem::path path;
 			prism::PGC::TextureType type;
 
-			bool operator==(const TexturePath& other) const {
-				return path == other.path && type == other.type;
-			}
+			bool operator==(const TexturePath& other) const;
 		};
 			
 		struct TextureColor {
 			std::array<uint8_t, 4> color;
 			prism::PGC::TextureType type;
 
-			bool operator==(const TextureColor& other) const {
-				return color == other.color && type == other.type;
-			}
+			bool operator==(const TextureColor& other) const;
 		};
 		
-		using MeshPath = std::filesystem::path;
+		struct MeshPath {
+			std::filesystem::path path;
+			std::string linkName;
+			prism::PGC::MeshTransform transform;
+
+			bool operator==(const MeshPath& other) const;
+
+			bool onlyTransformDiff(const MeshPath& other) const;
+		};
 		
 		struct MeshCube {
-			bool operator==(const MeshCube&) const { return true; }
+			prism::PGC::MeshTransform transform;
+			bool operator==(const MeshCube& other) const;
+			bool onlyTransformDiff(const MeshCube& other) const;
 		};
 		
 		struct MeshPlane {
-			bool operator==(const MeshPlane&) const { return true; }
+			prism::PGC::MeshTransform transform;
+			bool operator==(const MeshPlane& other) const;
+			bool onlyTransformDiff(const MeshPlane& other) const;
 		};
 
 		struct MeshGrid {
-			uint8_t subdivisionsX;
-			uint8_t subdivisionsZ;
-			uint8_t repeatTextureX;
-			uint8_t repeatTextureZ;
+			uint16_t subdivisionsX;
+			uint16_t subdivisionsZ;
+			uint16_t repeatTextureX;
+			uint16_t repeatTextureZ;
 
-			bool operator==(const MeshGrid& other) const {
-				return subdivisionsX == other.subdivisionsX &&
-					subdivisionsZ == other.subdivisionsZ &&
-					repeatTextureX == other.repeatTextureX &&
-					repeatTextureZ == other.repeatTextureZ;
-			}
+			prism::PGC::MeshTransform transform;
+
+			bool operator==(const MeshGrid& other) const;
+			bool onlyTransformDiff(const MeshGrid& other) const;
 		};
 
 		struct MeshIcoSphere {
 			uint8_t subdivisions;
+			prism::PGC::MeshTransform transform;
 
-			bool operator==(const MeshIcoSphere& other) const {
-				return subdivisions == other.subdivisions;
-			}
+			bool operator==(const MeshIcoSphere& other) const;
+			bool onlyTransformDiff(const MeshIcoSphere& other) const;
 		};
 
 		struct MeshUvSphere {
-			uint8_t subdivisionsVert;
-			uint8_t subdivisionsHoriz;
+			uint16_t subdivisionsVert;
+			uint16_t subdivisionsHoriz;
+			prism::PGC::MeshTransform transform;
 
-			bool operator==(const MeshUvSphere& other) const {
-				return subdivisionsVert == other.subdivisionsVert && subdivisionsHoriz == other.subdivisionsHoriz;
-			}
+			bool operator==(const MeshUvSphere& other) const;
+			bool onlyTransformDiff(const MeshUvSphere& other) const;
 		};
 
 	    
-		using AssetSpec = std::variant<TexturePath, TextureColor, MeshPath, MeshCube, MeshPlane, MeshGrid, MeshIcoSphere, MeshUvSphere>;
+		using AssetSpec = std::variant<std::monostate, TexturePath, TextureColor, MeshPath, MeshCube, MeshPlane, MeshGrid, MeshIcoSphere, MeshUvSphere>;
 
 		template<class... Ts>
 		struct overloaded : Ts... {
