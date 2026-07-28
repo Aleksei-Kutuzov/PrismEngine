@@ -1,0 +1,344 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{f31d0350-77d1-4c08-85f2-62fba6df84ee}</ProjectGuid>
+    <RootNamespace>PrismEngine</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)build\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)build\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)build\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)build\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>$(SolutionDir)build\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)build\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(SolutionDir)build\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)build\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg">
+    <VcpkgEnableManifest>true</VcpkgEnableManifest>
+    <VcpkgXUseBuiltInApplocalDeps>false</VcpkgXUseBuiltInApplocalDeps>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <VcpkgUseStatic>false</VcpkgUseStatic>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <VcpkgUseStatic>false</VcpkgUseStatic>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <VcpkgUseStatic>false</VcpkgUseStatic>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <VcpkgUseStatic>false</VcpkgUseStatic>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>PRISM_VULKAN</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>C:\VulkanSDK\1.4.309.0\Include;$(SolutionDir)libs\SDL2-2.30.9\include;$(SolutionDir)libs\glm;$(SolutionDir)libs\stb_image;$(SolutionDir)libs\tinyobjloader;$(SolutionDir)libs\MikkTSpace;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>
+      </SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <Lib>
+      <AdditionalDependencies>SDL2main.lib;SDL2.lib;opengl32.lib;vulkan-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Lib>
+    <Lib>
+      <AdditionalLibraryDirectories>C:\VulkanSDK\1.4.309.0\Lib;$(SolutionDir)libs\SDL2-2.30.9\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>PRISM_VULKAN</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>C:\VulkanSDK\1.4.309.0\Include;$(SolutionDir)libs\SDL2-2.30.9\include;$(SolutionDir)libs\glm;$(SolutionDir)libs\stb_image;$(SolutionDir)libs\tinyobjloader;$(SolutionDir)libs\MikkTSpace;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>
+      </SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <Lib>
+      <AdditionalDependencies>SDL2main.lib;SDL2.lib;opengl32.lib;vulkan-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Lib>
+    <Lib>
+      <AdditionalLibraryDirectories>C:\VulkanSDK\1.4.309.0\Lib;$(SolutionDir)libs\SDL2-2.30.9\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>PRISM_VULKAN</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>C:\VulkanSDK\1.4.309.0\Include;$(SolutionDir)libs\SDL2-2.30.9\include;$(SolutionDir)libs\glm;$(SolutionDir)libs\stb_image;$(SolutionDir)libs\tinyobjloader;$(SolutionDir)libs\MikkTSpace;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>
+      </SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <Lib>
+      <AdditionalDependencies>SDL2main.lib;SDL2.lib;opengl32.lib;vulkan-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Lib>
+    <Lib>
+      <AdditionalLibraryDirectories>C:\VulkanSDK\1.4.309.0\Lib;$(SolutionDir)libs\SDL2-2.30.9\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>PRISM_VULKAN</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>C:\VulkanSDK\1.4.309.0\Include;$(SolutionDir)libs\SDL2-2.30.9\include;$(SolutionDir)libs\glm;$(SolutionDir)libs\stb_image;$(SolutionDir)libs\tinyobjloader;$(SolutionDir)libs\MikkTSpace;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>
+      </SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <Lib>
+      <AdditionalDependencies>SDL2main.lib;SDL2.lib;opengl32.lib;vulkan-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Lib>
+    <Lib>
+      <AdditionalLibraryDirectories>C:\VulkanSDK\1.4.309.0\Lib;$(SolutionDir)libs\SDL2-2.30.9\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\libs\MikkTSpace\mikktspace.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="src\assetSpec.cpp" />
+    <ClCompile Include="src\debug.cpp" />
+    <ClCompile Include="src\descriptorSetLayoutWrapper.cpp" />
+    <ClCompile Include="src\init.cpp" />
+    <ClCompile Include="src\inputSystem.cpp" />
+    <ClCompile Include="src\instance.cpp" />
+    <ClCompile Include="src\linker.cpp" />
+    <ClCompile Include="src\logicalDevice.cpp" />
+    <ClCompile Include="src\materialBuilder.cpp" />
+    <ClCompile Include="src\meshBuilder.cpp" />
+    <ClCompile Include="src\meshLoader.cpp" />
+    <ClCompile Include="src\meshStorage.cpp" />
+    <ClCompile Include="src\physicalDevice.cpp" />
+    <ClCompile Include="src\pipelineSettings.cpp" />
+    <ClCompile Include="src\pipelineSettingsPresets.cpp" />
+    <ClCompile Include="src\pipelineStorage.cpp" />
+    <ClCompile Include="src\renderer.cpp" />
+    <ClCompile Include="src\renderSystem.cpp" />
+    <ClCompile Include="src\bufferWrapper.cpp" />
+    <ClCompile Include="src\componentManager.cpp" />
+    <ClCompile Include="src\deviceChecker.cpp" />
+    <ClCompile Include="src\deviceRater.cpp" />
+    <ClCompile Include="src\deviceWrapper.cpp" />
+    <ClCompile Include="src\entityManager.cpp" />
+    <ClCompile Include="src\fmath.cpp" />
+    <ClCompile Include="src\logger.cpp" />
+    <ClCompile Include="src\matrix.cpp" />
+    <ClCompile Include="src\PrismEngine.cpp" />
+    <ClCompile Include="src\renderPass.cpp" />
+    <ClCompile Include="src\resourcesCreater.cpp" />
+    <ClCompile Include="src\shaderStagesLoader.cpp" />
+    <ClCompile Include="src\renderObjectBathc.h" />
+    <ClCompile Include="src\surface.cpp" />
+    <ClCompile Include="src\swapChain.cpp" />
+    <ClCompile Include="src\systemManager.cpp" />
+    <ClCompile Include="src\tangentCalculator.cpp" />
+    <ClCompile Include="src\texture.cpp" />
+    <ClCompile Include="src\textureLoader.cpp" />
+    <ClCompile Include="src\textureStorage.cpp" />
+    <ClCompile Include="src\timeSystem.cpp" />
+    <ClCompile Include="src\transformComponent.cpp" />
+    <ClCompile Include="src\validationLayersWrapper.cpp" />
+    <ClCompile Include="src\vector.cpp" />
+    <ClCompile Include="src\vertex.cpp" />
+    <ClCompile Include="src\prismGraphicCore.cpp" />
+    <ClCompile Include="src\scene.cpp" />
+    <ClCompile Include="src\windowResource.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\debug.h" />
+    <ClInclude Include="src\descriptorSetLayoutWrapper.h" />
+    <ClInclude Include="src\idPool.h" />
+    <ClInclude Include="src\inputResource.h" />
+    <ClInclude Include="src\inputSystem.h" />
+    <ClInclude Include="src\instance.h" />
+    <ClInclude Include="src\layersMacroses.h" />
+    <ClInclude Include="src\lightsComponent.h" />
+    <ClInclude Include="src\linker.h" />
+    <ClInclude Include="src\logicalDevice.h" />
+    <ClInclude Include="src\material.h" />
+    <ClInclude Include="src\materialBuilder.h" />
+    <ClInclude Include="src\meshBuilder.h" />
+    <ClInclude Include="src\pathes.h" />
+    <ClInclude Include="src\pgcLayersObjsTemplate.h" />
+    <ClInclude Include="src\physicalDevice.h" />
+    <ClInclude Include="src\pipelineBuilder.h" />
+    <ClInclude Include="src\pipelineComponent.h" />
+    <ClInclude Include="src\pipelineSettings.h" />
+    <ClInclude Include="src\pipelineStorage.h" />
+    <ClInclude Include="src\PrismEngineECS.h" />
+    <ClInclude Include="src\dataPool.h" />
+    <ClInclude Include="src\registerPool.h" />
+    <ClInclude Include="src\renderer.h" />
+    <ClInclude Include="src\resource.h" />
+    <ClInclude Include="src\mesh.h" />
+    <ClInclude Include="src\meshComponent.h" />
+    <ClInclude Include="src\meshLoader.h" />
+    <ClInclude Include="src\meshStorage.h" />
+    <ClInclude Include="src\renderSystem.h" />
+    <ClInclude Include="src\resourceManager.h" />
+    <ClInclude Include="src\stComponents.h" />
+    <ClInclude Include="src\pgcResourceStorage.h" />
+    <ClInclude Include="src\stResources.h" />
+    <ClInclude Include="src\stSystems.h" />
+    <ClInclude Include="src\surface.h" />
+    <ClInclude Include="src\tangentCalculator.h" />
+    <ClInclude Include="src\texture.h" />
+    <ClInclude Include="src\materialComponent.h" />
+    <ClInclude Include="src\bufferWrapper.h" />
+    <ClInclude Include="src\cameraComponent.h" />
+    <ClInclude Include="src\component.h" />
+    <ClInclude Include="src\componentManager.h" />
+    <ClInclude Include="src\config.h" />
+    <ClInclude Include="src\deviceChecker.h" />
+    <ClInclude Include="src\deviceRater.h" />
+    <ClInclude Include="src\deviceWrapper.h" />
+    <ClInclude Include="src\entity.h" />
+    <ClInclude Include="src\entityManager.h" />
+    <ClInclude Include="src\fmath.h" />
+    <ClInclude Include="src\init.h" />
+    <ClInclude Include="src\logger.h" />
+    <ClInclude Include="src\matrix.h" />
+    <ClInclude Include="src\PrismEngine.h" />
+    <ClInclude Include="src\renderPass.h" />
+    <ClInclude Include="src\resourcesCreater.h" />
+    <ClInclude Include="src\shaderStagesLoader.h" />
+    <ClInclude Include="src\stb_image.h" />
+    <ClInclude Include="src\swapChain.h" />
+    <ClInclude Include="src\system.h" />
+    <ClInclude Include="src\systemManager.h" />
+    <ClInclude Include="src\textureLoader.h" />
+    <ClInclude Include="src\textureStorage.h" />
+    <ClInclude Include="src\timeResource.h" />
+    <ClInclude Include="src\timeSystem.h" />
+    <ClInclude Include="src\transformComponent.h" />
+    <ClInclude Include="src\bufferObjects.h" />
+    <ClInclude Include="src\utils.h" />
+    <ClInclude Include="src\validationLayersWrapper.h" />
+    <ClInclude Include="src\vector.h" />
+    <ClInclude Include="src\vertex.h" />
+    <ClInclude Include="src\prismGraphicCore.h" />
+    <ClInclude Include="src\scene.h" />
+    <ClInclude Include="src\dataHandle.h" />
+    <ClInclude Include="src\vkEnumsWrappers.h" />
+    <ClInclude Include="src\windowResource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\assetSpec.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

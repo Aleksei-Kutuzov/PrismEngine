@@ -1,0 +1,547 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Исходные файлы">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Файлы заголовков">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="math">
+      <UniqueIdentifier>{a26c7da2-0ec4-4555-8674-023f410e7787}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="logger">
+      <UniqueIdentifier>{4a13ca97-9be7-4ddd-b604-ccaf5f3138a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="init">
+      <UniqueIdentifier>{ecd5987a-b7a8-4140-b733-e2fc9f7ca3eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="pgc">
+      <UniqueIdentifier>{24140a25-8f69-4300-ac9e-2fc0755c4639}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ECS">
+      <UniqueIdentifier>{a30449b4-0874-4067-bef7-879c48798530}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ECS\entity">
+      <UniqueIdentifier>{5eb93861-75e7-4396-b4ad-68ac283bdd85}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ECS\component">
+      <UniqueIdentifier>{137671f2-d23c-4ccd-b69c-535e8fdda8ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ECS\system">
+      <UniqueIdentifier>{83f611dd-4693-4a70-b3d1-dcdd97552e9b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="stComponents">
+      <UniqueIdentifier>{1d531cba-949d-481f-966c-01434f97225a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="pgc\vertex">
+      <UniqueIdentifier>{7e67c3d1-e872-4108-a292-343ba99a204d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="stSystems">
+      <UniqueIdentifier>{100c9d80-a30f-49a2-99f8-d1207b625003}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ECS\scene">
+      <UniqueIdentifier>{729752ad-bb95-4e6d-b3ea-5f627b74d74a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ECS\resource">
+      <UniqueIdentifier>{5f4de1ad-5382-4c2c-a284-1e1108cbb4e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="stResources">
+      <UniqueIdentifier>{486996d2-56a5-420b-80b3-4c2308655c1c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="renderer">
+      <UniqueIdentifier>{00234c02-7909-45fd-9e67-ec6caf772a1b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="pgc\utils">
+      <UniqueIdentifier>{09eb38aa-3244-4c7a-affa-558905675217}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="stComponents\transform">
+      <UniqueIdentifier>{ec19ebb4-6314-496e-a09d-b297944a0297}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="stSystems\renderSystem">
+      <UniqueIdentifier>{a356270e-863a-4968-a748-d6686d8fad3a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="pgc\layers">
+      <UniqueIdentifier>{31e593e4-9f00-472f-9cca-d1fcbb834b7d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="pgc\layers\L1">
+      <UniqueIdentifier>{b0efe856-1d33-464a-b215-d2e8e4fd4035}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="pgc\layers\L1\instanse">
+      <UniqueIdentifier>{39a78263-a819-4f88-841a-29f909b32988}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="pgc\layers\L1\debug">
+      <UniqueIdentifier>{89c23412-02cb-4ddf-8edb-23b760a4099a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="pgc\layers\L1\physicalDevice">
+      <UniqueIdentifier>{2ec8c3ed-b437-417f-a9f2-490235979008}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="pgc\layers\L1\surface">
+      <UniqueIdentifier>{9a73b4c5-6167-461c-99f0-4c4ea50f5240}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="pgc\layers\L1\logicalDevice">
+      <UniqueIdentifier>{b85b91ce-438f-498f-810c-5aa59ebecd3b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="pgc\layers\L1\swapChain">
+      <UniqueIdentifier>{dfc4bec6-3eec-498c-ba5e-4738c1c253f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="pgc\layers\L1\renderPass">
+      <UniqueIdentifier>{2c3d8703-84d0-4a20-a9be-1b15cf9f59ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="pgc\layers\L1\pipelineStorage">
+      <UniqueIdentifier>{8315d74a-0bef-470c-af21-d94a3a3f6645}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="pgc\layers\L2">
+      <UniqueIdentifier>{36b95757-0798-4ffe-90b5-7d20246fccae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="pgc\layers\L2\deviceRater">
+      <UniqueIdentifier>{56d2917b-6803-43ed-b919-28078dba5fcc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="pgc\layers\L2\deviceChecker">
+      <UniqueIdentifier>{5abacc10-c187-4a64-9064-c98b4dcaacbd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="pgc\layers\L2\meshLoader">
+      <UniqueIdentifier>{bd6dfe6b-86af-453b-9ada-85aabf8a972e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="pgc\layers\L2\shaderStagesLoader">
+      <UniqueIdentifier>{22af9c39-b406-4e16-a9c4-5f9daa5e4cb0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="pgc\layers\L2\textureLoader">
+      <UniqueIdentifier>{995ed1f7-4828-4f13-b9dc-76f1cde1e99b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="pgc\layers\L1\textureStorage">
+      <UniqueIdentifier>{19a0af67-8016-4b0c-9e10-e6d846eedac1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="pgc\layers\L3">
+      <UniqueIdentifier>{169b7d26-eecd-4120-b7d2-0a6942d876e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="pgc\layers\L3\descriptorSetLayoutWrapper">
+      <UniqueIdentifier>{6047c794-5427-4754-811e-bdee487a7ce8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="pgc\layers\L3\bufferWrapper">
+      <UniqueIdentifier>{50abc52e-6619-411d-b3ef-25bdd72cc325}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="pgc\layers\L3\deviceWrapper">
+      <UniqueIdentifier>{d52727b7-de87-496e-ad31-a4b4f3b623bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="pgc\layers\L3\resourcesCreater">
+      <UniqueIdentifier>{6cff4c67-af37-4b8b-9468-5fbab3890a8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="pgc\layers\L3\validationLayersWrapper.cpp">
+      <UniqueIdentifier>{1aebfa23-ef1b-48af-9675-e1c5b8179c15}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="linker">
+      <UniqueIdentifier>{ad2c4f91-2ae4-4b99-9b5f-5b64250c4b69}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="pgc\layers\L1\pgcResourceStorage">
+      <UniqueIdentifier>{bff03fd1-0687-4b13-84bb-13a52ca44a93}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="pgc\layers\L1\meshStorage">
+      <UniqueIdentifier>{21ed911b-efb8-44d6-963a-0cfd62b79868}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="pgc\layers\L3\tangentCalculator">
+      <UniqueIdentifier>{725836d6-aa79-4a99-ad49-5c9bcd787c30}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="assets">
+      <UniqueIdentifier>{32e4eaf5-2c9f-478b-8461-1317bd59102f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="utils">
+      <UniqueIdentifier>{14fa9ade-f950-44d4-be6f-c1dc541f2a98}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="utils\idPool">
+      <UniqueIdentifier>{40c193ca-9411-4a3a-8d72-ae0d2ae42b16}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="renderer\material">
+      <UniqueIdentifier>{0a0e95bf-2e71-4161-8ffc-353303fc3bbc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="renderer\mesh">
+      <UniqueIdentifier>{ad5aa837-14af-4036-8618-10e348db046c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="renderer\pipeline">
+      <UniqueIdentifier>{65fd9718-d1a4-429e-9b13-0efed27b453d}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\fmath.cpp">
+      <Filter>math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\matrix.cpp">
+      <Filter>math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\vector.cpp">
+      <Filter>math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PrismEngine.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="src\logger.cpp">
+      <Filter>logger</Filter>
+    </ClCompile>
+    <ClCompile Include="src\deviceChecker.cpp">
+      <Filter>pgc\layers\L2\deviceChecker</Filter>
+    </ClCompile>
+    <ClCompile Include="src\deviceRater.cpp">
+      <Filter>pgc\layers\L2\deviceRater</Filter>
+    </ClCompile>
+    <ClCompile Include="src\renderPass.cpp">
+      <Filter>pgc\layers\L1\renderPass</Filter>
+    </ClCompile>
+    <ClCompile Include="src\swapChain.cpp">
+      <Filter>pgc\layers\L1\swapChain</Filter>
+    </ClCompile>
+    <ClCompile Include="src\deviceWrapper.cpp">
+      <Filter>pgc\layers\L3\deviceWrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="src\resourcesCreater.cpp">
+      <Filter>pgc\layers\L3\resourcesCreater</Filter>
+    </ClCompile>
+    <ClCompile Include="src\shaderStagesLoader.cpp">
+      <Filter>pgc\layers\L2\shaderStagesLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="src\bufferWrapper.cpp">
+      <Filter>pgc\layers\L3\bufferWrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="src\prismGraphicCore.cpp">
+      <Filter>pgc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\entityManager.cpp">
+      <Filter>ECS\entity</Filter>
+    </ClCompile>
+    <ClCompile Include="src\componentManager.cpp">
+      <Filter>ECS\component</Filter>
+    </ClCompile>
+    <ClCompile Include="src\systemManager.cpp">
+      <Filter>ECS\system</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scene.cpp">
+      <Filter>ECS\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\vertex.cpp">
+      <Filter>pgc\vertex</Filter>
+    </ClCompile>
+    <ClCompile Include="src\textureLoader.cpp">
+      <Filter>pgc\layers\L2\textureLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="src\meshStorage.cpp">
+      <Filter>pgc\layers\L1\meshStorage</Filter>
+    </ClCompile>
+    <ClCompile Include="src\meshLoader.cpp">
+      <Filter>pgc\layers\L2\meshLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="src\timeSystem.cpp">
+      <Filter>stSystems</Filter>
+    </ClCompile>
+    <ClCompile Include="src\inputSystem.cpp">
+      <Filter>stSystems</Filter>
+    </ClCompile>
+    <ClCompile Include="src\windowResource.cpp">
+      <Filter>stResources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\textureStorage.cpp">
+      <Filter>pgc\layers\L1\textureStorage</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pipelineStorage.cpp">
+      <Filter>pgc\layers\L1\pipelineStorage</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pipelineSettings.cpp">
+      <Filter>pgc\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pipelineSettingsPresets.cpp">
+      <Filter>pgc\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\transformComponent.cpp">
+      <Filter>stComponents\transform</Filter>
+    </ClCompile>
+    <ClCompile Include="src\renderSystem.cpp">
+      <Filter>stSystems\renderSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="src\instance.cpp">
+      <Filter>pgc\layers\L1\instanse</Filter>
+    </ClCompile>
+    <ClCompile Include="src\debug.cpp">
+      <Filter>pgc\layers\L1\debug</Filter>
+    </ClCompile>
+    <ClCompile Include="src\physicalDevice.cpp">
+      <Filter>pgc\layers\L1\physicalDevice</Filter>
+    </ClCompile>
+    <ClCompile Include="src\surface.cpp">
+      <Filter>pgc\layers\L1\surface</Filter>
+    </ClCompile>
+    <ClCompile Include="src\logicalDevice.cpp">
+      <Filter>pgc\layers\L1\logicalDevice</Filter>
+    </ClCompile>
+    <ClCompile Include="src\descriptorSetLayoutWrapper.cpp">
+      <Filter>pgc\layers\L3\descriptorSetLayoutWrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="src\validationLayersWrapper.cpp">
+      <Filter>pgc\layers\L3\validationLayersWrapper.cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\renderObjectBathc.h">
+      <Filter>stSystems\renderSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="src\linker.cpp">
+      <Filter>linker</Filter>
+    </ClCompile>
+    <ClCompile Include="src\init.cpp">
+      <Filter>init</Filter>
+    </ClCompile>
+    <ClCompile Include="src\renderer.cpp">
+      <Filter>renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\texture.cpp">
+      <Filter>pgc\layers\L1\textureStorage</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tangentCalculator.cpp">
+      <Filter>pgc\layers\L3\tangentCalculator</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libs\MikkTSpace\mikktspace.c">
+      <Filter>pgc\layers\L3\tangentCalculator</Filter>
+    </ClCompile>
+    <ClCompile Include="src\assetSpec.cpp">
+      <Filter>assets</Filter>
+    </ClCompile>
+    <ClCompile Include="src\materialBuilder.cpp">
+      <Filter>renderer\material</Filter>
+    </ClCompile>
+    <ClCompile Include="src\meshBuilder.cpp">
+      <Filter>renderer\mesh</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\fmath.h">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\matrix.h">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\vector.h">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\config.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="src\PrismEngine.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="src\logger.h">
+      <Filter>logger</Filter>
+    </ClInclude>
+    <ClInclude Include="src\init.h">
+      <Filter>init</Filter>
+    </ClInclude>
+    <ClInclude Include="src\stb_image.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="src\deviceChecker.h">
+      <Filter>pgc\layers\L2\deviceChecker</Filter>
+    </ClInclude>
+    <ClInclude Include="src\deviceRater.h">
+      <Filter>pgc\layers\L2\deviceRater</Filter>
+    </ClInclude>
+    <ClInclude Include="src\renderPass.h">
+      <Filter>pgc\layers\L1\renderPass</Filter>
+    </ClInclude>
+    <ClInclude Include="src\swapChain.h">
+      <Filter>pgc\layers\L1\swapChain</Filter>
+    </ClInclude>
+    <ClInclude Include="src\deviceWrapper.h">
+      <Filter>pgc\layers\L3\deviceWrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="src\resourcesCreater.h">
+      <Filter>pgc\layers\L3\resourcesCreater</Filter>
+    </ClInclude>
+    <ClInclude Include="src\shaderStagesLoader.h">
+      <Filter>pgc\layers\L2\shaderStagesLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="src\bufferWrapper.h">
+      <Filter>pgc\layers\L3\bufferWrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="src\prismGraphicCore.h">
+      <Filter>pgc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\entityManager.h">
+      <Filter>ECS\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="src\entity.h">
+      <Filter>ECS\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="src\component.h">
+      <Filter>ECS\component</Filter>
+    </ClInclude>
+    <ClInclude Include="src\componentManager.h">
+      <Filter>ECS\component</Filter>
+    </ClInclude>
+    <ClInclude Include="src\systemManager.h">
+      <Filter>ECS\system</Filter>
+    </ClInclude>
+    <ClInclude Include="src\system.h">
+      <Filter>ECS\system</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scene.h">
+      <Filter>ECS\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cameraComponent.h">
+      <Filter>stComponents</Filter>
+    </ClInclude>
+    <ClInclude Include="src\bufferObjects.h">
+      <Filter>pgc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\vertex.h">
+      <Filter>pgc\vertex</Filter>
+    </ClInclude>
+    <ClInclude Include="src\textureLoader.h">
+      <Filter>pgc\layers\L2\textureLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="src\meshStorage.h">
+      <Filter>pgc\layers\L1\meshStorage</Filter>
+    </ClInclude>
+    <ClInclude Include="src\meshLoader.h">
+      <Filter>pgc\layers\L2\meshLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="src\meshComponent.h">
+      <Filter>stComponents</Filter>
+    </ClInclude>
+    <ClInclude Include="src\stComponents.h">
+      <Filter>stComponents</Filter>
+    </ClInclude>
+    <ClInclude Include="src\stSystems.h">
+      <Filter>stSystems</Filter>
+    </ClInclude>
+    <ClInclude Include="src\resource.h">
+      <Filter>ECS\resource</Filter>
+    </ClInclude>
+    <ClInclude Include="src\resourceManager.h">
+      <Filter>ECS\resource</Filter>
+    </ClInclude>
+    <ClInclude Include="src\timeResource.h">
+      <Filter>stResources</Filter>
+    </ClInclude>
+    <ClInclude Include="src\timeSystem.h">
+      <Filter>stSystems</Filter>
+    </ClInclude>
+    <ClInclude Include="src\stResources.h">
+      <Filter>stResources</Filter>
+    </ClInclude>
+    <ClInclude Include="src\inputResource.h">
+      <Filter>stResources</Filter>
+    </ClInclude>
+    <ClInclude Include="src\inputSystem.h">
+      <Filter>stSystems</Filter>
+    </ClInclude>
+    <ClInclude Include="src\windowResource.h">
+      <Filter>stResources</Filter>
+    </ClInclude>
+    <ClInclude Include="src\textureStorage.h">
+      <Filter>pgc\layers\L1\textureStorage</Filter>
+    </ClInclude>
+    <ClInclude Include="src\texture.h">
+      <Filter>pgc\layers\L1\textureStorage</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lightsComponent.h">
+      <Filter>stComponents</Filter>
+    </ClInclude>
+    <ClInclude Include="src\pipelineStorage.h">
+      <Filter>pgc\layers\L1\pipelineStorage</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utils.h">
+      <Filter>pgc\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\pipelineSettings.h">
+      <Filter>pgc\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\transformComponent.h">
+      <Filter>stComponents\transform</Filter>
+    </ClInclude>
+    <ClInclude Include="src\materialComponent.h">
+      <Filter>stComponents</Filter>
+    </ClInclude>
+    <ClInclude Include="src\renderSystem.h">
+      <Filter>stSystems\renderSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="src\PrismEngineECS.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="src\instance.h">
+      <Filter>pgc\layers\L1\instanse</Filter>
+    </ClInclude>
+    <ClInclude Include="src\debug.h">
+      <Filter>pgc\layers\L1\debug</Filter>
+    </ClInclude>
+    <ClInclude Include="src\physicalDevice.h">
+      <Filter>pgc\layers\L1\physicalDevice</Filter>
+    </ClInclude>
+    <ClInclude Include="src\surface.h">
+      <Filter>pgc\layers\L1\surface</Filter>
+    </ClInclude>
+    <ClInclude Include="src\logicalDevice.h">
+      <Filter>pgc\layers\L1\logicalDevice</Filter>
+    </ClInclude>
+    <ClInclude Include="src\descriptorSetLayoutWrapper.h">
+      <Filter>pgc\layers\L3\descriptorSetLayoutWrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="src\layersMacroses.h">
+      <Filter>pgc\layers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\pgcLayersObjsTemplate.h">
+      <Filter>pgc\layers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\validationLayersWrapper.h">
+      <Filter>pgc\layers\L3\validationLayersWrapper.cpp</Filter>
+    </ClInclude>
+    <ClInclude Include="src\linker.h">
+      <Filter>linker</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dataHandle.h">
+      <Filter>ECS\component</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dataPool.h">
+      <Filter>ECS\component</Filter>
+    </ClInclude>
+    <ClInclude Include="src\renderer.h">
+      <Filter>renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\pipelineComponent.h">
+      <Filter>stComponents</Filter>
+    </ClInclude>
+    <ClInclude Include="src\registerPool.h">
+      <Filter>ECS\component</Filter>
+    </ClInclude>
+    <ClInclude Include="src\pgcResourceStorage.h">
+      <Filter>pgc\layers\L1\pgcResourceStorage</Filter>
+    </ClInclude>
+    <ClInclude Include="src\tangentCalculator.h">
+      <Filter>pgc\layers\L3\tangentCalculator</Filter>
+    </ClInclude>
+    <ClInclude Include="src\pathes.h">
+      <Filter>assets</Filter>
+    </ClInclude>
+    <ClInclude Include="src\idPool.h">
+      <Filter>utils\idPool</Filter>
+    </ClInclude>
+    <ClInclude Include="src\material.h">
+      <Filter>renderer\material</Filter>
+    </ClInclude>
+    <ClInclude Include="src\materialBuilder.h">
+      <Filter>renderer\material</Filter>
+    </ClInclude>
+    <ClInclude Include="src\meshBuilder.h">
+      <Filter>renderer\mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="src\mesh.h">
+      <Filter>renderer\mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="src\pipelineBuilder.h">
+      <Filter>renderer\pipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="src\vkEnumsWrappers.h">
+      <Filter>pgc\utils</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\assetSpec.h">
+      <Filter>assets</Filter>
+    </None>
+  </ItemGroup>
+</Project>

@@ -6,7 +6,6 @@ bin/
 obj/
 Debug/
 Release/
-PrismEngine/
 .vs/
 *.suo
 *.user
