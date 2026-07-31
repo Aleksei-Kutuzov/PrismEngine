@@ -39,19 +39,20 @@ layout(location = 0) in vec3 fragColor;
 layout(location = 1) in vec2 fragTexCoord;
 layout(location = 2) in vec3 fragNormal;
 layout(location = 3) in vec3 fragPos;
+layout(location = 4) in vec4 fragTang;
 
-layout(location = 4) in flat uint fragAlbedoTextureIndex;
-layout(location = 5) in flat uint fragNormalTextureIndex;
-layout(location = 6) in flat uint fragMetallicTextureIndex;
-layout(location = 7) in flat uint fragRoughnessTextureIndex;
-layout(location = 8) in flat uint fragAmbientTextureIndex;
-layout(location = 9) in flat uint fragEmissionTextureIndex;
-layout(location = 10) in flat uint fragHeightTextureIndex;
+layout(location = 5) in flat uint fragAlbedoTextureIndex;
+layout(location = 6) in flat uint fragNormalTextureIndex;
+layout(location = 7) in flat uint fragMetallicTextureIndex;
+layout(location = 8) in flat uint fragRoughnessTextureIndex;
+layout(location = 9) in flat uint fragAmbientTextureIndex;
+layout(location = 10) in flat uint fragEmissionTextureIndex;
+layout(location = 11) in flat uint fragHeightTextureIndex;
 
-layout(location = 11) in flat float fragMetallicScalar;
-layout(location = 12) in flat float fragRoughnessScalar;
-layout(location = 13) in flat float fragEmissionScalar;
-layout(location = 14) in flat float fragHeightScalar;
+layout(location = 12) in flat float fragMetallicScalar;
+layout(location = 13) in flat float fragRoughnessScalar;
+layout(location = 14) in flat float fragEmissionScalar;
+layout(location = 15) in flat float fragHeightScalar;
 
 
 layout(location = 0) out vec4 outColor;

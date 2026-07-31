@@ -1,201 +1,227 @@
 #include "PrismEngine.h"
 #include "../examples.h"
+#include <iostream>
 
 namespace spinningPrism {
-    // Константы для удобства изменения параметров
-    const std::string EXAMPLE_NAME = "spinningPrism";
-    const float ROTATION_SPEED = 45.0f; // градусов в секунду
-    const int WINDOW_WIDTH = 800;
-    const int WINDOW_HEIGHT = 600;
+
+    // =========================================================================
+    // КОНСТАНТЫ
+    // =========================================================================
+    constexpr std::string_view EXAMPLE_NAME = "spinningPrism";
+    constexpr std::string_view WINDOW_TITLE = "Spinning Prism Demo";
+    constexpr float ROTATION_SPEED = 45.0f; // градусов в секунду
+    constexpr int WINDOW_WIDTH = 800;
+    constexpr int WINDOW_HEIGHT = 600;
+    constexpr int TARGET_FPS = 60;
 
     using namespace prism::scene;
 
+    // =========================================================================
+    // СИСТЕМЫ
+    // =========================================================================
+
     /**
-     * Система вращения - автоматически вращает все объекты с компонентом Transform
-     * Демонстрирует принцип работы систем в ECS архитектуре
+     * @brief Система вращения.
+     * Автоматически вращает все объекты, имеющие компоненты Transform и Mesh.
+     * Демонстрирует принцип работы систем в ECS-архитектуре.
      */
     class RotationSystem : public ISystem {
     public:
-        RotationSystem(Scene* scene) : scene(scene) {}
+        explicit RotationSystem(Scene* scene) : scene_(scene) {}
 
         void update() override {
-            // Получаем все сущности, которые имеют и Transform и Mesh компоненты
-            auto rotatingObjects = scene->getEntitiesWithAll<TransformComponent, MeshComponent>();
+            if (!scene_) return;
 
-            // Для каждого объекта добавляем вращение вокруг оси Y
+            // Получаем все сущности, имеющие и Transform, и Mesh компоненты
+            const auto rotatingObjects = scene_->getEntitiesWithAll<TransformComponent, MeshComponent>();
+            const auto* timeRes = scene_->getResource<TimeResource>();
+
+            if (!timeRes) return;
+
+            const float deltaRotation = ROTATION_SPEED * timeRes->deltaTime;
+
+            // Вращаем каждый объект вокруг оси Y
             for (auto entity : rotatingObjects) {
-                TransformComponent* transform = scene->getComponent<TransformComponent>(entity);
-                transform->rot.y += ROTATION_SPEED * scene->getResource<TimeResource>()->deltaTime;
+                if (auto* transform = scene_->getComponent<TransformComponent>(entity)) {
+                    transform->rot.y += deltaRotation;
+                }
             }
         }
 
     private:
-        Scene* scene;
+        Scene* scene_;
     };
 
+    // =========================================================================
+    // ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
+    // =========================================================================
+
     /**
-     * Создает 3D объект с заданными параметрами
-     * Демонстрирует композиционный подход - объект собирается из компонентов
+     * @brief Создает 3D-объект с заданными параметрами.
+     * Объект собирается из компонентов.
      */
     Entity create3DObject(Scene& scene,
         const MeshComponent& mesh,
         const MaterialComponent& material,
-        Position position = { 0, 0, 0 },
-        Scale scale = { 1, 1, 1 }) {
-        // Создаем новую сущность в сцене
+        Position position = { 0.0f, 0.0f, 0.0f },
+        Scale scale = { 1.0f, 1.0f, 1.0f })
+    {
         Entity entity = scene.createEntity();
 
         // Добавляем компонент трансформации (позиция, вращение, масштаб)
         scene.addComponent(entity, TransformComponent{
             position,           // Позиция в мире
-            {0, 0, 0},          // Начальное вращение (в градусах)
+            {0.0f, 0.0f, 0.0f}, // Начальное вращение (в градусах)
             scale               // Масштаб
             });
 
         // Добавляем компонент меша (геометрия объекта)
         scene.addComponent(entity, mesh);
 
-        // Добавляем компонент текстуры (внешний вид)
+        // Добавляем компонент материала (внешний вид и текстуры)
         scene.addComponent(entity, material);
 
         return entity;
     }
 
+    // =========================================================================
+    // ТОЧКА ВХОДА ПРИМЕРА
+    // =========================================================================
+
     /**
-     * Демонстрация вращающейся призмы - первый пример для движка PrismEngine
+     * @brief Демонстрация вращающейся призмы - первый пример для движка PrismEngine.
      *
      * Этот пример показывает:
-     * 1. Как инициализировать движок и создать окно
-     * 2. Как работать с ECS (Entity-Component-System) архитектурой
-     * 3. Как создавать и настраивать 3D объекты
-     * 4. Как использовать системы для добавления поведения
+     * 1. Как инициализировать движок и создать окно.
+     * 2. Как работать с архитектурой ECS (Entity-Component-System).
+     * 3. Как создавать и настраивать 3D-объекты.
+     * 4. Как использовать системы для добавления поведения.
      */
-    int spinningPrismDemo(int targetFps) {
+    int spinningPrismDemo(int targetFps = TARGET_FPS) {
+
         // ========== ШАГ 1: ИНИЦИАЛИЗАЦИЯ ДВИЖКА ==========
         prism::init();
+        prism::basePath = std::string(EXAMPLE_NAME);
 
-        prism::basePath = EXAMPLE_NAME;
-
-        // Создаем сцену для хранения всех объектов
         Scene scene;
 
-        // Создаем ресурс окна для отображения 3D графики
-        WindowResource window = WindowResource::CreateCentered("The solar system model", WINDOW_WIDTH, WINDOW_HEIGHT);
+        // Создаем ресурс окна для отображения 3D-графики
+        WindowResource window = WindowResource::CreateCentered(
+            WINDOW_TITLE.data(),
+            WINDOW_WIDTH,
+            WINDOW_HEIGHT
+        );
         scene.setResource<WindowResource>(window);
 
-        // Создаем рендерер
+        // Создаем и настраиваем рендерер
         prism::render::Renderer renderer;
-
-        // Линкуем рендедер с сцену
         prism::linker.link(&renderer, &scene);
 
-        // setDefaultSettings требует слинкованную с рендером сцену, содержашую ресурс окна
+        // setDefaultSettings требует слинкованную с рендером сцену, содержащую ресурс окна
         renderer.setDefaultSettings();
 
         // Указываем пути к шейдерам (программы для видеокарты)
         renderer.settings.defaultPipeline.shaders = {
             "vert.spv",
             "frag.spv",
-            EXAMPLE_NAME + "/shaders/"
+            std::string(EXAMPLE_NAME) + "/shaders/"
         };
-
         renderer.init();
 
         // ========== ШАГ 2: ЗАГРУЗКА РЕСУРСОВ ==========
 
-        // Загружаем 3D модель призмы из файла
-        MeshComponent prismMesh = renderer.loadMesh(EXAMPLE_NAME + "/models/prism.obj");
+        // Загружаем 3D-модель призмы из файла
+        MeshComponent prismMesh = renderer.meshBuilder()
+            .size(1)
+            .model(0, "prism.obj")
+            .complete();
 
         // Загружаем материал для призмы
-        MaterialComponent prismMaterial = renderer.materialBuilder().
-            size(1).
-            albedo(0, "color://5F17F3FF").
-            complete();
+        MaterialComponent prismMaterial = renderer.materialBuilder()
+            .size(1)
+            .albedo(0, "prismfasetexturex.png")
+            .complete();
 
-        // Обновляем меши в рендерере (применяем загруженные ресурсы)
+        // Применяем загруженные ресурсы в рендерере
         renderer.updateMeshes();
 
         // ========== ШАГ 3: НАСТРОЙКА СИСТЕМ И РЕСУРСОВ ==========
 
-        // Добавляем ресурс времени
+        // Ресурс времени
         TimeResource timeRes{};
         timeRes.setFPSCap(targetFps);
-
         scene.setResource<TimeResource>(timeRes);
 
+        // Ресурс и система ввода (нужна для обновления состояний окна и ввода)
         scene.setResource<InputResource>(InputResource{});
-        scene.registerSystem<InputSystem>(&scene); // Нужна для обновления состояний окна и ввода
+        scene.registerSystem<InputSystem>(&scene);
 
-        // Добавляем систему обновления времени
+        // Система обновления времени
         scene.registerSystem<TimeSystem>(&scene);
 
-        // Регистрируем систему рендеринга (отвечает за отрисовку)
-        scene.registerSystem<RenderSystem>(&scene);
-
-        // Регистрируем нашу кастомную систему вращения
+        // Наша кастомная система вращения
         scene.registerSystem<RotationSystem>(&scene);
+
+        // Система рендеринга (отвечает за отрисовку, должна быть после обновления логики)
+        scene.registerSystem<RenderSystem>(&scene);
 
         // ========== ШАГ 4: СОЗДАНИЕ КАМЕРЫ ==========
 
-        // Камера - глаза пользователя в 3D мире
         Entity camera = scene.createEntity();
 
         // Позиционируем камеру так, чтобы хорошо видеть сцену
         scene.addComponent(camera, TransformComponent{
-            {0, 2, 10},     // Камера смотрит на сцену сверху и сзади
-            {0, 0, 0},
-            {1, 1, 1}
+            {0.0f, 2.0f, 10.0f}, // Камера смотрит на сцену сверху и сзади
+            {0.0f, 0.0f, 0.0f},
+            {1.0f, 1.0f, 1.0f}
             });
 
         // Настраиваем параметры камеры
         CameraComponent cameraConfig{};
-        cameraConfig.isActive = true;    // Делаем эту камеру активной
-        cameraConfig.fovy = 45.0f;       // Угол обзора (поле зрения)
-        cameraConfig.zNear = 0.1f;       // Ближняя плоскость отсечения
-        cameraConfig.zFar = 100.0f;      // Дальняя плоскость отсечения
-        cameraConfig.look = { -90.f, -15.f, 0.0f };
+        cameraConfig.isActive = true;      // Делаем эту камеру активной
+        cameraConfig.fovy = 45.0f;         // Угол обзора (поле зрения)
+        cameraConfig.zNear = 0.1f;         // Ближняя плоскость отсечения
+        cameraConfig.zFar = 100.0f;        // Дальняя плоскость отсечения
+        cameraConfig.look = { -90.0f, -15.0f, 0.0f }; // Углы Эйлера
 
         scene.addComponent(camera, cameraConfig);
 
         // ========== ШАГ 5: СОЗДАНИЕ ОБЪЕКТОВ СЦЕНЫ ==========
 
-        // Создаем центральную призму
+        // Центральная призма
         create3DObject(scene, prismMesh, prismMaterial,
-            { 0, 0, 0 },     // Позиция в центре
-            { 1, 1, 1 });    // Полный размер
+            { 0.0f, 0.0f, 0.0f },     // Позиция в центре
+            { 1.0f, 1.0f, 1.0f });    // Полный размер
 
-        // Создаем меньшую призму справа
+        // Меньшая призма справа
         create3DObject(scene, prismMesh, prismMaterial,
-            { 3, 0, 0 },     // Смещена вправо
-            { 0.5, 0.5, 0.5 }); // Вдвое меньше
+            { 3.0f, 0.0f, 0.0f },     // Смещена вправо
+            { 0.5f, 0.5f, 0.5f });    // Вдвое меньше
 
-        // Создаем меньшую призму слева  
+        // Меньшая призма слева
         create3DObject(scene, prismMesh, prismMaterial,
-            { -3, 0, 0 },    // Смещена влево
-            { 0.5, 0.5, 0.5 }); // Вдвое меньше
+            { -3.0f, 0.0f, 0.0f },    // Смещена влево
+            { 0.5f, 0.5f, 0.5f });    // Вдвое меньше
 
         // ========== ШАГ 6: ИНФОРМАЦИЯ ДЛЯ ПОЛЬЗОВАТЕЛЯ ==========
 
         std::cout << "=== PrismEngine: Spinning Prism Demo ===" << std::endl;
         std::cout << "All prisms automatically rotate at a speed of "
-            << ROTATION_SPEED << " degrees per second" << std::endl;
-        std::cout << "Close the exit window" << std::endl;
-
-
+            << ROTATION_SPEED << " degrees per second." << std::endl;
+        std::cout << "Close the window to exit." << std::endl;
 
         // ========== ШАГ 7: ГЛАВНЫЙ ЦИКЛ ПРИЛОЖЕНИЯ ==========
-        // Главный цикл - выполняется пока окно не закрыто
-        while (!scene.getResource<WindowResource>()->isClose()) {
-            // Обновляем сцену (вызываем все системы)
+
+        WindowResource* windowRes = scene.getResource<WindowResource>();
+
+        while (windowRes && !windowRes->isClose()) {
             scene.update();
-            // prism::logger::info("FPS:" + std::to_string(scene.getResource<TimeResource>()->getCurrentFPS()));
         }
 
         // ========== ШАГ 8: КОРРЕКТНОЕ ЗАВЕРШЕНИЕ ==========
 
-        // Очищаем ресурсы рендерера
         renderer.destroy();
-
         return 0;
     }
-}
+
+} // namespace spinningPrism
