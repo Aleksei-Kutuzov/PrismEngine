@@ -35,6 +35,7 @@ set(SDL2_PATH "${CMAKE_SOURCE_DIR}/libs/SDL2-2.30.9")
 set(GLM_PATH "${CMAKE_SOURCE_DIR}/libs/glm")
 set(STB_IMAGE_PATH "${CMAKE_SOURCE_DIR}/libs/stb_image")
 set(TINYOBJLOADER_PATH "${CMAKE_SOURCE_DIR}/libs/tinyobjloader")
+set(MIKKTSPACE_PATH "${CMAKE_SOURCE_DIR}/libs/MikkTSpace")
 
 # Проверка существования путей
 if(NOT EXISTS ${SDL2_PATH} AND WIN32)

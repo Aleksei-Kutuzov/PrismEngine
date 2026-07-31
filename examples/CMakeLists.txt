@@ -5,6 +5,7 @@ set(EXAMPLES_SOURCES
     spinningPrism/spinningPrism.cpp
     solarSystem/solarSystem.cpp
     dancingNeonCubes/dancingNeonCubes.cpp
+    materials/materials.cpp
 )
 
 # Создание исполняемого файла
