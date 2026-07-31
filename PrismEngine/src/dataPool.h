@@ -1,4 +1,5 @@
 #pragma once
+#include <cstring>
 #include <stack>
 #include <vector>
 #include "dataHandle.h"

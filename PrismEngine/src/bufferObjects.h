@@ -26,11 +26,11 @@ namespace prism {
 		};
 		
 		struct PointLightsSSBO {
-			prism::scene::PointLightComponent lights[];
+			prism::scene::PointLightComponent lights[0];
 		};
 
 		struct DirectionalLightsSSBO {	
-			prism::scene::DirectionalLightComponents lights[];
+			prism::scene::DirectionalLightComponents lights[0];
 		};
 
 		struct StorageBuffers {

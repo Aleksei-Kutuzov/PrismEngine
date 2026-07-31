@@ -5,7 +5,6 @@
 #include "stb_image.h"
 #include <stdexcept>
 #include "pathes.h"
-#include "resourcesPath.h"
 
 
 prism::PGC::Texture prism::PGC::L2::TextureLoader::loadTexture(prism::assets::TexturePath texturePath)

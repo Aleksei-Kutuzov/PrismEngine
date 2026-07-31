@@ -2,7 +2,6 @@
 #include <glm.hpp>
 #include <gtc/quaternion.hpp>
 #include <gtc/matrix_transform.hpp>
-#include "resourcesPath.h"
 
 prism::PGC::MeshTransform& prism::render::MeshBuilder::getMeshTransform(uint16_t subMeshId) {
 	if (subMeshId >= meshParams.size()) meshParams.resize(subMeshId + 1);

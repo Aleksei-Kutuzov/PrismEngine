@@ -5,7 +5,6 @@
 #include "logger.h"
 #include "pathes.h"
 #include "tangentCalculator.h"
-#include "resourcesPath.h"
 
 prism::PGC::MeshData prism::PGC::L2::MeshLoader::loadObj(assets::MeshPath assetSpec, std::vector<Vertex>& vertices, std::vector<uint32_t>& indices) {
     assetSpec.path = prism::basePath / prism::modelsDir / assetSpec.path;

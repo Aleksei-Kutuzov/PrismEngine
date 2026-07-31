@@ -2,7 +2,6 @@
 #include "linker.h"
 #include "textureStorage.h"
 #include "renderer.h"
-#include "resourcesPath.h"
 
 prism::render::MaterialBuilder::MaterialBuilder(prism::scene::Scene& scene, prism::PGC::L1::TextureStorage& storage) : scene(scene), storage(storage) { }
 

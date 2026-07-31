@@ -1,3 +1,4 @@
+#include <algorithm>
 #include "systemManager.h"
 
 void prism::scene::SystemManager::enableSystem(SystemId systemId)

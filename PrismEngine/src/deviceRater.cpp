@@ -1,7 +1,7 @@
 #include <unordered_set>
 #include <algorithm>
+#include "logger.h"
 #include "deviceRater.h"
-#include "base.h"
 #include "deviceWrapper.h"
 #include "deviceChecker.h"
 
