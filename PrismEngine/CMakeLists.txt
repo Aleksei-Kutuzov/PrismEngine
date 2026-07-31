@@ -7,6 +7,8 @@ file(GLOB PRISM_HEADERS
     "src/*.h"
 )
 
+add_subdirectory(${MIKKTSPACE_PATH} ${CMAKE_CURRENT_BINARY_DIR}/MikkTSpace_build)
+
 # Создание статической библиотеки
 add_library(PrismEngine STATIC ${PRISM_SOURCES} ${PRISM_HEADERS})
 
@@ -59,6 +61,7 @@ else()
         ${SDL2_LIBRARIES}
         Vulkan::Vulkan
         OpenGL::GL
+        mikk_space
     )
 endif()
 
